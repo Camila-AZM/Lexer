@@ -1,4 +1,3 @@
-import ply
 import ply.lex as lex
 
 tokens=(
@@ -59,12 +58,11 @@ tokens=(
     'Ruta',
     'Contenido',
     'nuevalinea',
-    'espacios'
+    'espacios',
 )
 
-
 def t_TipoDocumento(t):
-    r'<!DOCTYPE article>'
+    r'<!\s*DOCTYPE\s+article\s*>'
     return t
 
 def t_A_Article(t):    
@@ -259,9 +257,6 @@ def t_Dominio(t):
     r'[a-zA-Z]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*'
     return t
 
-def t_Contenido(t): 
-    r'[^<>]+'
-    return t
 
 def t_nuevalinea(t):
     r'\n+'
@@ -271,13 +266,17 @@ def t_espacios(t):
     r'\s+'
     pass
 
+def t_Contenido(t): 
+    r'[^<>]+'
+    return t
+
 def t_error(t):
     print("Carácter no válido: '%s'" % t.value[0])
     t.lexer.skip(1)
 
 lexer = lex.lex()
 
-documento = input("Ingrese el documento a analizar: ")
+documento = input("Ingrese el documento: ")
 
 lexer.input(documento)
 
