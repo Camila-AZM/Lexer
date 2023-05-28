@@ -1,4 +1,5 @@
 import ply.lex as lex
+import re
 
 tokens=(
     'TipoDocumento',
@@ -20,12 +21,36 @@ tokens=(
     'C_Copyright',
     'A_Para',
     'C_Para',
-    'A_Estructurales',
-    'C_Estructurales',
+    'A_Simpara',
+    'C_Simpara',
+    'A_Emphasis',
+    'C_Emphasis',
+    'A_Comment',
+    'C_Comment',
+    'A_Link',
+    'C_Link',
     'A_Important',
     'C_Important',
-    'A_InfoAutor',
-    'C_InfoAutor',
+    'A_FirstName',
+    'C_FirstName',
+    'A_SurName',
+    'C_SurName',
+    'A_Street',
+    'C_Street',
+    'A_City',
+    'C_City',
+    'A_State',
+    'C_State',
+    'A_Phone',
+    'C_Phone',
+    'A_Email',
+    'C_Email',
+    'A_Date',
+    'C_Date',
+    'A_Year',
+    'C_Year',
+    'A_Holder',
+    'C_Holder',
     'A_MediaObject',
     'C_MediaObject',
     'A_VideoObject',
@@ -52,17 +77,14 @@ tokens=(
     'C_EntryTbl',
     'A_Entry',
     'C_Entry',
-    'Protocolo',
-    'Dominio',
-    'Puerto',
-    'Ruta',
+    'URL',
     'Contenido',
     'nuevalinea',
     'espacios',
 )
 
 def t_TipoDocumento(t):
-    r'<!\s*DOCTYPE\s+article\s*>'
+    r'<DOCTYPE\sarticle\s*>'
     return t
 
 def t_A_Article(t):    
@@ -137,12 +159,116 @@ def t_C_Para(t):
     r'</para>'
     return t
 
+def t_A_SimPara(t):
+    r'<simpara>'
+    return t
+
+def t_C_SimPara(t):
+    r'</simpara>'
+    return t
+
+def t_A_Emphasis(t):
+    r'<emphasis>'
+    return t
+
+def t_C_Emphasis(t):
+    r'</emphasis>'
+    return t
+
+def t_A_Comment(t):
+    r'<comment>'
+    return t
+
+def t_C_Comment(t):
+    r'</comment>'
+    return t
+
 def t_A_Important(t):
     r'<important>'
     return t
 
 def t_C_Important(t):
     r'</important>'
+    return t
+
+def t_A_FirstName(t):
+    r'<firstname>'
+    return t
+
+def t_C_FirstName(t):
+    r'</firstname>'
+    return t
+
+def t_A_SurName(t):
+    r'<surname>'
+    return t
+
+def t_C_SurName(t):
+    r'</surname>'
+    return t
+
+def t_A_Street(t):
+    r'<street>'
+    return t
+
+def t_C_Street(t):
+    r'</street>'
+    return t
+
+def t_A_City(t):
+    r'<city>'
+    return t
+
+def t_C_City(t):
+    r'</city>'
+    return t
+
+def t_A_State(t):
+    r'<state>'
+    return t
+
+def t_C_State(t):
+    r'</state>'
+    return t
+
+def t_A_Phone(t):
+    r'<phone>'
+    return t
+
+def t_C_Phone(t):
+    r'</phone>'
+    return t
+
+def t_A_Email(t):
+    r'<email>'
+    return t
+
+def t_C_Email(t):
+    r'</email>'
+    return t
+
+def t_A_Date(t):
+    r'<date>'
+    return t
+
+def t_C_Date(t):
+    r'</date>'
+    return t
+
+def t_A_Year(t):
+    r'<year>'
+    return t
+
+def t_C_Year(t):
+    r'</year>'
+    return t
+
+def t_A_Holder(t):
+    r'<holder>'
+    return t
+
+def t_C_Holder(t):
+    r'</holder>'
     return t
 
 def t_A_MediaObject(t):
@@ -167,14 +293,6 @@ def t_A_ImageObject(t):
 
 def t_C_ImageObject(t):
     r'</imageobject>'
-    return t
-
-def t_ImageData(t): 
-    r'<imagedata/>'
-    return t
-
-def t_VideoData(t): 
-    r'<videodata/>'
     return t
 
 def t_A_ItemizedList(t):
@@ -249,14 +367,9 @@ def t_C_Entry(t):
     r'</entry>'
     return t
 
-def t_Protocolo(t):
-    r'http|https|ftp|ftps'
+def t_URL(t):
+    r'(http|https|ftp|ftps)://[a-zA-Z][\w.-]+(:\d*)?(/[a-zA-Z0-9-]+)*(\#\w+)?'
     return t
-
-def t_Dominio(t):
-    r'[a-zA-Z]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*'
-    return t
-
 
 def t_nuevalinea(t):
     r'\n+'
@@ -275,6 +388,24 @@ def t_error(t):
     t.lexer.skip(1)
 
 lexer = lex.lex()
+
+#Funciones definidas despues de la creacion del lexer porque usan concatenacion
+
+def t_A_Link(t):
+    r'<link\s+xlink:href\s*=\s*' + t_URL.pattern + r'>'
+    return t
+
+def t_C_Link(t):
+    r'</link>'
+    return t
+
+def t_ImageData(t): 
+    r'<imagedata fileref='+ t_URL.pattern +r'/>'
+    return t
+
+def t_VideoData(t): 
+    r'<videodata fileref='+ t_URL.pattern + r'/>'
+    return t
 
 documento = input("Ingrese el documento: ")
 
