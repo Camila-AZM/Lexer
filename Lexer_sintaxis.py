@@ -1,5 +1,4 @@
 import ply.lex as lex
-import re
 
 tokens=(
     'TipoDocumento',
@@ -387,12 +386,8 @@ def t_error(t):
     print("Carácter no válido: '%s'" % t.value[0])
     t.lexer.skip(1)
 
-lexer = lex.lex()
-
-#Funciones definidas despues de la creacion del lexer porque usan concatenacion
-
 def t_A_Link(t):
-    r'<link\s+xlink:href\s*=\s*' + t_URL.pattern + r'>'
+    r'<link\s+xlink:href\s*=\s*(http|https|ftp|ftps)://[a-zA-Z][\w.-]+(:\d*)?(/[a-zA-Z0-9-]+)*(\#\w+)?>'
     return t
 
 def t_C_Link(t):
@@ -400,14 +395,18 @@ def t_C_Link(t):
     return t
 
 def t_ImageData(t): 
-    r'<imagedata fileref='+ t_URL.pattern +r'/>'
+    r'<imagedata\s+fileref\s*=\s*(http|https|ftp|ftps)://[a-zA-Z][\w.-]+(:\d*)?(/[a-zA-Z0-9-]+)*(\#\w+)?/>'
     return t
 
 def t_VideoData(t): 
-    r'<videodata fileref='+ t_URL.pattern + r'/>'
+    r'<videodata\s+fileref\s*=\s*(http|https|ftp|ftps)://[a-zA-Z][\w.-]+(:\d*)?(/[a-zA-Z0-9-]+)*(\#\w+)?/>'
     return t
 
+lexer = lex.lex()
+
 documento = input("Ingrese el documento: ")
+
+print("\n\n")
 
 lexer.input(documento)
 
@@ -415,4 +414,4 @@ while True:
     token = lexer.token()
     if not token:
         break
-    print(token.type, token.value)
+    print(token.type, token.value, "\n")
