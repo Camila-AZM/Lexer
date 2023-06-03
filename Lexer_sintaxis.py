@@ -6,6 +6,8 @@ tokens=(
     'C_Article',
     'A_Section',
     'C_Section',
+    'A_Title',
+    'C_Title',
     'A_SimpleSection',
     'C_SimpleSection',
     'A_Info',
@@ -77,13 +79,14 @@ tokens=(
     'A_Entry',
     'C_Entry',
     'URL',
-    'Contenido',
     'nuevalinea',
     'espacios',
+    'tabulacion',
+    'Contenido',
 )
 
 def t_TipoDocumento(t):
-    r'<DOCTYPE\sarticle\s*>'
+    r'<!DOCTYPE\sarticle\s*>'
     return t
 
 def t_A_Article(t):    
@@ -100,6 +103,14 @@ def t_A_Section(t):
 
 def t_C_Section(t): 
     r'</section>'
+    return t
+
+def t_A_Title(t):
+    r'<title>'
+    return t
+
+def t_C_Title(t):
+    r'</title>'
     return t
 
 def t_A_SimpleSection(t): 
@@ -367,27 +378,24 @@ def t_C_Entry(t):
     return t
 
 def t_URL(t):
-    r'(http|https|ftp|ftps)://[a-zA-Z][\w.-]+(:\d*)?(/[a-zA-Z0-9-]+)*(\#\w+)?'
+    r'(http|https|ftp|ftps)://[a-zA-Z][\w.-]+(:\d*)?(/[a-zA-Z0-9-.-]+)*(\#\w+)?'
     return t
 
 def t_nuevalinea(t):
-    r'\n+'
+    r'\\n'
     t.lexer.lineno += len(t.value)
-
-def t_espacios(t):
-    r'\s+'
     pass
 
-def t_Contenido(t): 
-    r'[^<>]+'
-    return t
+def t_espacios(t):
+    r'\\s+'
+    pass
 
-def t_error(t):
-    print("Carácter no válido: '%s'" % t.value[0])
-    t.lexer.skip(1)
+def t_tabulacion(t):
+    r'\\t'
+    pass
 
 def t_A_Link(t):
-    r'<link\s+xlink:href\s*=\s*(http|https|ftp|ftps)://[a-zA-Z][\w.-]+(:\d*)?(/[a-zA-Z0-9-]+)*(\#\w+)?>'
+    r'<link\s+xlink:href\s*=\s*["\']((http|https|ftp|ftps)://[a-zA-Z][\w.-]+(:\d*)?(/[a-zA-Z0-9-.-]+)*(\#\w+)?)["\']\s*>'
     return t
 
 def t_C_Link(t):
@@ -395,14 +403,24 @@ def t_C_Link(t):
     return t
 
 def t_ImageData(t): 
-    r'<imagedata\s+fileref\s*=\s*(http|https|ftp|ftps)://[a-zA-Z][\w.-]+(:\d*)?(/[a-zA-Z0-9-]+)*(\#\w+)?/>'
+    r'<imagedata\s+fileref\s*=\s*["\']((http|https|ftp|ftps)://[a-zA-Z][\w.-]+(:\d*)?(/[a-zA-Z0-9-.-]+)*(\#\w+)?)["\']\s*/>'
     return t
 
 def t_VideoData(t): 
-    r'<videodata\s+fileref\s*=\s*(http|https|ftp|ftps)://[a-zA-Z][\w.-]+(:\d*)?(/[a-zA-Z0-9-]+)*(\#\w+)?/>'
+    r'<videodata\s+fileref\s*=\s*["\']((http|https|ftp|ftps)://[a-zA-Z][\w.-]+(:\d*)?(/[a-zA-Z0-9-.-]+)*(\#\w+)?)["\']\s*/>'
     return t
 
+def t_Contenido(t): 
+    r'[^<>\n]+'
+    return t
+
+def t_error(t):
+    print("Carácter no válido: '%s'" % t.value[0])
+    t.lexer.skip(1)
+
 lexer = lex.lex()
+
+lexer.lineno = 1
 
 documento = input("Ingrese el documento: ")
 
@@ -415,3 +433,5 @@ while True:
     if not token:
         break
     print(token.type, token.value, "\n")
+
+input()
