@@ -414,4 +414,8 @@ while True:
     token = lexer.token()
     if not token:
         break
+<<<<<<< HEAD
     print(token.type, token.value, "\n")
+=======
+    print(token.type, token.value)
+>>>>>>> be2fcfd40d480d9711cbe607035a28320c003cf7
