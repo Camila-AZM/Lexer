@@ -387,7 +387,7 @@ def t_nuevalinea(t):
     pass
 
 def t_espacios(t):
-    r'\\s+'
+    '\s+'
     pass
 
 def t_tabulacion(t):
