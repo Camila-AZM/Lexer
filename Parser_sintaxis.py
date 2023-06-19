@@ -1,8 +1,8 @@
 import ply.yacc as yacc
-from Lexer_sintaxis.py import tokens
+from Lexer_sintaxis import tokens
 
-def p_sigma(p):
-    '''sigma: TipoDocumento article''' 
+def p_docbook(p):
+    '''docbook: TipoDocumento article''' 
 
 def p_article(p):
     '''article: A_Article metadata items sections C_Article
@@ -33,21 +33,26 @@ def p_items(p):
             | A_Abstract title paragraph C_Abstract items
             | A_Abstract paragraph C_Abstract
             | A_Abstract paragraph C_Abstract items'''
-    
-def p_section(p):
+
+#corregi porque decia 'section', mientras que arriba en article decia sections
+
+def p_sections(p):
     '''section: A_Section contenidosection C_Section
             | A_Section contenidosection C_Section section
-            | A_SimpleSection contenidosection C_SimpleSection
-            | A_SimpleSection contenidosection C_SimpleSection section'''
+            | A_SimpleSection contenidosimpsection C_SimpleSection
+            | A_SimpleSection contenidosimpsection C_SimpleSection section'''
 
 def p_contenidosection(p):
     '''contenidosection: metadata items section
                         | metadata items'''
 
+#Agregue esta porque tienen distintos contenidos, simplesect no puede incluir una section dentro
+
+def p_contenidosimpsection(p):
+    '''contenidosimpsection: metadata items'''
+
 def p_info(p):
-    '''info: A_MediaObject info multimedia C_MediaObject
-        | A_MediaObject info multimedia C_MediaObject info
-        | A_MediaObject multimedia C_MediaObject
+    '''info: A_MediaObject multimedia C_MediaObject
         | A_MediaObject multimedia C_MediaObject info
         | A_Abstract abstract C_Abstract
         | A_Abstract abstract C_Abstract info
@@ -63,33 +68,41 @@ def p_info(p):
         | A_Title title C_Title info'''
     
 def p_title(p):
-    title:
+    '''title: Contenido
+        | Contenido title
+        | A_Emphasis emphasis C_Emphasis
+        | A_Emphasis emphasis C_Emphasis title
+        | A_Link link C_Link
+        | A_Link link C_Link title
+        | A_Email email C_Email
+        | A_Email email C_Email title'''
 
 def p_important(p):
-    important: 
+    '''important: A_Title title C_Title items
+        | items'''
 
 def p_paragraph(p):
     '''paragraph: A_Para para C_Para
-                | A_Simpara simpara C_Simpara
-                | A_Para para C_Para A_Simpara inlinetags C_Simpara
-                | A_Simpara inlinetags C_Simpara A_Para para C_Para'''
+        | A_Simpara inlinetags C_Simpara
+        | A_Para para C_Para paragraph
+        | A_Simpara inlinetags C_Simpara paragraph'''
 
 def p_address(p):
     '''address: Contenido 
-            | Contenido address 
-            | A_Street personalinfo C_Street 
-            | A_Street personalinfo C_Street address
-            | A_City personalinfo C_City
-            | A_City personalinfo C_City address
-            | A_State personalinfo C_State
-            | A_State personalinfo C_State address
-            | A_Phone personalinfo C_Phone 
-            | A_Phone personalinfo C_Phone address 
-            | A_Email personalinfo C_Email
-            | A_Email personalinfo C_Email address'''
+        | Contenido address 
+        | A_Street personalinfo C_Street 
+        | A_Street personalinfo C_Street address
+        | A_City personalinfo C_City
+        | A_City personalinfo C_City address
+        | A_State personalinfo C_State
+        | A_State personalinfo C_State address
+        | A_Phone personalinfo C_Phone 
+        | A_Phone personalinfo C_Phone address 
+        | A_Email personalinfo C_Email
+        | A_Email personalinfo C_Email address'''
     
 def p_mediaobject(p):
-    mediaobject:
+    '''mediaobject: info multimedia'''
 
 def p_table(p):
     table:
