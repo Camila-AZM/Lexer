@@ -80,7 +80,10 @@ def p_title(p):
 def p_important(p):
     '''important: A_Title title C_Title items
         | items'''
-
+    
+def p_link(p):
+    '''link:'''
+    
 def p_paragraph(p):
     '''paragraph: A_Para para C_Para
         | A_Simpara inlinetags C_Simpara
