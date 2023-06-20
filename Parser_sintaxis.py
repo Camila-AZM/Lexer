@@ -52,8 +52,8 @@ def p_contenidosimpsection(p):
     '''contenidosimpsection: metadata items'''
 
 def p_info(p):
-    '''info: A_MediaObject multimedia C_MediaObject
-        | A_MediaObject multimedia C_MediaObject info
+    '''info: A_MediaObject mediaobject C_MediaObject
+        | A_MediaObject mediaobject C_MediaObject info
         | A_Abstract abstract C_Abstract
         | A_Abstract abstract C_Abstract info
         | A_Address address C_Address
@@ -102,11 +102,8 @@ def p_address(p):
         | A_Email personalinfo C_Email address'''
     
 def p_mediaobject(p):
-    '''mediaobject: info multimedia'''
-
-def p_table(p):
-    table:
-
+    '''mediaobject: info multimedia
+                    | multimedia'''
 
 def p_name(p):
     '''name: A_FirstName personalinfo C_FirstName
@@ -115,7 +112,14 @@ def p_name(p):
             | A_SurName personalinfo C_SurName name'''
 
 def p_personalinfo(p):
-    personalinfo:
+    '''personalinfo: Contenido 
+                    | Contenido personalinfo
+                    | A_Link link C_Link
+                    | A_Link link C_Link personalinfo
+                    | A_Emphasis emphasis C_Emphasis
+                    | A_Emphasis emphasis C_Emphasis personalinfo
+                    | A_Comment inlinetags C_Comment
+                    | A_Comment inlinetags C_Comment personalinfo'''
 
 def p_copyright(p):
     '''copyright: A_Year personalinfo C_Year
@@ -148,4 +152,61 @@ def p_para(p):
             | A_InformalTable table C_InformalTable para'''
 
 def p_inlinetags(p):
-    inlinetags:
+    '''inlinetags: Contenido
+                | Contenido inlinetags
+                | A_Emphasis emphasis C_Emphasis
+                | A_Emphasis emphasis C_Emphasis inlinetags
+                | A_Link link C_Link
+                | A_Link link C_Link inlinetags
+                | A_Email personalinfo C_Email
+                | A_Email personalinfo C_Email inlinetags
+                | A_Author name C_Author
+                | A_Author name C_Author inlinetags
+                | A_Comment inlinetags C_Comment
+                | A_Comment inlinetags C_Comment inlinetags'''
+
+def p_multimedia(p):
+    '''multimedia: A_ImageObject imageobj C_ImageObject
+                | A_ImageObject imageobj C_ImageObject multimedia
+                | A_VideoObject videoobj C_VideoObject
+                | A_VideoObject videoobj C_VideoObject multimedia'''
+
+def p_imageobj(p):
+    '''imageobj: info ImageData
+            | ImageData'''
+    
+def p_videoobj(p):
+    '''videoobj: info VideoData
+            | VideoData'''
+    
+def p_table(p):
+    '''table: A_MediaObject mediaobject C_MediaObject A_Tgroup tablecontent C_Tgroup
+            | A_Tgroup tablecontent C_Tgroup A_MediaObject mediaobject C_MediaObject
+            | A_MediaObject mediaobject C_MediaObject table A_Tgroup tablecontent C_Tgroup
+            | A_Tgroup tablecontent C_Tgroup table A_MediaObject mediaobject C_MediaObject'''
+
+def p_tablecontent(p):
+    '''tablecontent: A_Tbody conterow C_Tbody
+                    | A_Thead conterow C_Thead A_Tbody conterow C_Tbody
+                    | A_Tfoot conterow C_Tfoot A_Tbody conterow C_Tbody
+                    | A_Thead conterow C_Thead A_Tfoot conterow C_TfootA_Tbody conterow C_Tbody'''
+
+def p_conterow(p):
+    '''conterow: A_Row entrance C_Row
+                | A_Row entrance C_Row conterow'''
+
+def p_entrance(p):
+    '''entrance: A_Entry conteentry C_Entry
+                | A_EntryTbl conteetbl C_EntryTbl
+                | A_Entry conteentry C_Entry entrance
+                | A_EntryTbl conteetbl C_EntryTbl entrance'''
+
+def p_conteentry(p):
+    '''conteentry: Contenido 
+                | Contenido conteentry 
+                | items
+                | items conteentry'''
+
+def p_conteetbl(p):
+    '''conteetbl: A_Tbody conterow C_Tbody
+                | A_Thead conterow C_Thead A_Tbody conterow C_Tbody'''
