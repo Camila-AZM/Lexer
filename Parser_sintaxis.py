@@ -74,8 +74,8 @@ def p_title(p):
         | A_Emphasis emphasis C_Emphasis title
         | A_Link link C_Link
         | A_Link link C_Link title
-        | A_Email email C_Email
-        | A_Email email C_Email title'''
+        | A_Email personalinfo C_Email
+        | A_Email personalinfo C_Email title'''
 
 def p_important(p):
     '''important: A_Title title C_Title items
@@ -128,10 +128,8 @@ def p_para(p):
             | Contenido para
             | A_Emphasis inlinetags C_Emphasis
             | A_Emphasis inlinetags C_Emphasis para
-            | A_Link inlinetags C_Link
-            | A_Link inlinetags C_Link para
-            | A_Link URL ???? inlinetags C_Link
-            | A_Link URL ????inlinetags C_Link para
+            | A_Link link C_Link
+            | A_Link link C_Link para
             | A_Author name C_Author
             | A_Author name C_Author para
             | A_Comment inlinetags C_Comment
