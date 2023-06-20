@@ -6,60 +6,63 @@ def p_docbook(p):
 
 def p_article(p):
     '''article: A_Article metadata items sections C_Article
-            | A_Article items sections C_Article
-            | A_Article items C_Article'''
+        | A_Article items sections C_Article
+        | A_Article items C_Article'''
 
 def p_metadata(p):
     '''metadata: A_Info info C_Info A_Title title C_Title
-            | A_Title title C_Title
-            | A_Info info C_Info'''
+        | A_Title title C_Title
+        | A_Info info C_Info'''
 
 def p_items(p):
     '''items: A_ItemizedList items C_ItemizedList
-            | A_ItemizedList items C_ItemizedList items 
-            | A_Important important C_Important
-            | A_Important important C_Important items
-            | paragraph
-            | paragraph items
-            | A_Address address C_Address
-            | A_Address address C_Address items
-            | A_MediaObject mediaobject C_MediaObject
-            | A_MediaObject mediaobject C_MediaObject items
-            | A_InformalTable table C_InformalTable
-            | A_InformalTable table C_InformalTable items
-            | A_Comment inlinetags C_Comment
-            | A_Comment inlinetags C_Comment items
-            | A_Abstract title paragraph C_Abstract
-            | A_Abstract title paragraph C_Abstract items
-            | A_Abstract paragraph C_Abstract
-            | A_Abstract paragraph C_Abstract items'''
+        | A_ItemizedList items C_ItemizedList items 
+        | A_Important important C_Important
+        | A_Important important C_Important items
+        | paragraph
+        | paragraph items
+        | A_Address address C_Address
+        | A_Address address C_Address items
+        | A_MediaObject mediaobject C_MediaObject
+        | A_MediaObject mediaobject C_MediaObject items
+        | A_InformalTable table C_InformalTable
+        | A_InformalTable table C_InformalTable items
+        | A_Comment inlinetags C_Comment
+        | A_Comment inlinetags C_Comment items
+        | A_Abstract title paragraph C_Abstract
+        | A_Abstract title paragraph C_Abstract items
+        | A_Abstract paragraph C_Abstract
+        | A_Abstract paragraph C_Abstract items'''
 
 #corregi porque decia 'section', mientras que arriba en article decia sections
 
 def p_sections(p):
     '''section: A_Section contenidosection C_Section
-            | A_Section contenidosection C_Section section
-            | A_SimpleSection contenidosimpsection C_SimpleSection
-            | A_SimpleSection contenidosimpsection C_SimpleSection section'''
+        | A_Section contenidosection C_Section section
+        | A_SimpleSection contenidosimpsection C_SimpleSection
+        | A_SimpleSection contenidosimpsection C_SimpleSection section'''
 
 def p_contenidosection(p):
     '''contenidosection: metadata items section
-                        | metadata items'''
+        | metadata items
+        | metadata section
+        | metadata'''
 
 #Agregue esta porque tienen distintos contenidos, simplesect no puede incluir una section dentro
 
 def p_contenidosimpsection(p):
-    '''contenidosimpsection: metadata items'''
+    '''contenidosimpsection: metadata items
+        | metadata'''
 
 def p_info(p):
-    '''info: A_MediaObject multimedia C_MediaObject
-        | A_MediaObject multimedia C_MediaObject info
+    '''info: A_MediaObject mediaobject C_MediaObject
+        | A_MediaObject mediaobject C_MediaObject info
         | A_Abstract abstract C_Abstract
         | A_Abstract abstract C_Abstract info
         | A_Address address C_Address
         | A_Address address C_Address info
-        | A_Author name C_Author
-        | A_Author name C_Author info
+        | A_Author author C_Author
+        | A_Author author C_Author info
         | A_Date personalinfo C_Date
         | A_Date personalinfo C_Date info
         | A_Copyright copyright C_Copyright
@@ -86,7 +89,64 @@ def p_paragraph(p):
         | A_Simpara inlinetags C_Simpara
         | A_Para para C_Para paragraph
         | A_Simpara inlinetags C_Simpara paragraph'''
+    
+def p_mediaobject(p):
+    '''mediaobject: info multimedia
+        | multimedia'''
 
+def p_table(p):
+    '''table: A_MediaObject mediaobject C_MediaObject
+        | A_MediaObject mediaobject C_MediaObject table
+        | A_Tgroup tgroup C_Tgroup
+        | A_Tgroup tgroup C_Tgroup table'''
+
+def p_personalinfo(p):
+    '''personalinfo: Contenido
+        | Contenido personalinfo
+        | '''
+
+def p_para(p):
+    '''para: Contenido 
+        | Contenido para
+        | A_Emphasis inlinetags C_Emphasis
+        | A_Emphasis inlinetags C_Emphasis para
+        | A_Link inlinetags C_Link
+        | A_Link inlinetags C_Link para
+        | A_Link inlinetags C_Link
+        | A_Link inlinetags C_Link para
+        | A_Author author C_Author
+        | A_Author author C_Author para
+        | A_Comment inlinetags C_Comment
+        | A_Comment inlinetags C_Comment para
+        | A_ItemizedList items C_ItemizedList
+        | A_ItemizedList items C_ItemizedList para
+        | A_Important  items C_Important
+        | A_Important items C_Important para
+        | A_Address address C_Address
+        | A_Address address C_Address para
+        | A_MediaObject mediaobject C_MediaObject
+        | A_MediaObject mediaobject C_MediaObject para
+        | A_InformalTable table C_InformalTable
+        | A_InformalTable table C_InformalTable para'''
+
+def p_inlinetags(p):
+    '''inlinetags: Contenido
+        | Contenido inlinetags
+        | A_Emphasis inlinetags C_Emphasis
+        | A_Emphasis inlinetags C_Emphasis inlinetags
+        | A_Link inlinetags C_Link
+        | A_Link inlinetags C_Link inlinetags
+        | A_Comment inlinetags C_Comment
+        | A_Comment inlinetags C_Comment inlinetags
+        | A_Email personalinfo C_Email
+        | A_Email personalinfo C_Email inlinetags
+        | A_Author author C_Author
+        | A_Author author C_Author inlinetags'''
+
+def p_abstract(p):
+    '''abstract: A_Title title C_title paragraph
+        | paragraph'''
+    
 def p_address(p):
     '''address: Contenido 
         | Contenido address 
@@ -100,54 +160,39 @@ def p_address(p):
         | A_Phone personalinfo C_Phone address 
         | A_Email personalinfo C_Email
         | A_Email personalinfo C_Email address'''
-    
-def p_mediaobject(p):
-    '''mediaobject: info multimedia'''
 
-def p_table(p):
-    table:
-
-
-def p_name(p):
-    '''name: A_FirstName personalinfo C_FirstName
-            | A_FirstName personalinfo C_FirstName name
-            | A_SurName personalinfo C_SurName
-            | A_SurName personalinfo C_SurName name'''
-
-def p_personalinfo(p):
-    personalinfo:
+def author(p):
+    '''author: A_FirstName personalinfo C_FirstName
+        | A_FirstName personalinfo C_FirstName author
+        | A_SurName personalinfo C_SurName
+        | A_SurName personalinfo C_SurName author'''
 
 def p_copyright(p):
     '''copyright: A_Year personalinfo C_Year
-                | A_Year personalinfo C_Year A_Holder personalinfo C_Holder
-                | A_Year personalinfo C_Year copyright
-                | A_Year personalinfo C_Year copyright A_Holder personalinfo C_Holder'''
+        | A_Year personalinfo C_Year A_Holder personalinfo C_Holder
+        | A_Year personalinfo C_Year copyright
+        | A_Year personalinfo C_Year copyright A_Holder personalinfo C_Holder'''
+    
+def p_personalinfo(p):
+    '''personalinfo: Contenido
+        | Contenido personalinfo
+        | A_Link inlinetags C_Link
+        | A_Link inlinetags C_Link personalinfo
+        | A_Emphasis inlinetags C_Emphasis
+        | A_Emphasis inlinetags C_Emphasis personalinfo
+        | A_Comment inlinetags C_Comment
+        | A_Comment inlinetags C_Comment personalinfo'''
 
-def p_para(p):
-    '''para: Contenido 
-            | Contenido para
-            | A_Emphasis inlinetags C_Emphasis
-            | A_Emphasis inlinetags C_Emphasis para
-            | A_Link inlinetags C_Link
-            | A_Link inlinetags C_Link para
-            | A_Link URL ???? inlinetags C_Link
-            | A_Link URL ????inlinetags C_Link para
-            | A_Author name C_Author
-            | A_Author name C_Author para
-            | A_Comment inlinetags C_Comment
-            | A_Comment inlinetags C_Comment para
-            | A_ItemizedList items C_ItemizedList
-            | A_ItemizedList items C_ItemizedList para
-            | A_Important A_Title title C_Title  items C_Important
-            | A_Important A_Title title C_Title items C_Important para
-            | A_Important items C_Important
-            | A_Important items C_Important para 
-            | A_Address address C_Address
-            | A_Address address C_Address para
-            | A_MediaObject mediaobject C_MediaObject
-            | A_MediaObject mediaobject C_MediaObject para
-            | A_InformalTable table C_InformalTable
-            | A_InformalTable table C_InformalTable para'''
+def multimedia(p):
+    '''multimedia: A_ImageObject imageobject C_ImageObject
+        | A_ImageObject imageobject C_ImageObject multimedia
+        | A_VideoObject videoobject C_VideoObject
+        | A_VideoObject videoobject C_VideoObject multimedia'''
 
-def p_inlinetags(p):
-    inlinetags:
+def videoobject(p):
+    '''videoobject: VideoData
+        | Info VideoData'''
+
+def imageobject(p):
+    '''imageobject: ImageData
+        | Info ImageData'''
