@@ -1,4 +1,5 @@
 import ply.yacc as yacc
+import xml.etree.ElementTree as ET
 from Lexer_sintaxis import tokens
 
 def p_docbook(p):
@@ -239,3 +240,8 @@ def p_entry(p):
 def p_entrytbl(p):
     '''entrytbl: A_Thead row C_Thead A_Tbody row C_Tbody
         | A_Tbody row C_Tbody'''
+    
+def p_error_lexico(p):
+    print("Error sintactico en la linea", p.lineno, "Valor:", p.value)
+
+parser = yacc.yacc()
