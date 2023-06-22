@@ -426,7 +426,10 @@ def t_Contenido(t):
 
 def t_error(t):
     print("Carácter no válido: '%s'" % t.value[0])
-    t.lexer.skip(1)
+    t.type = 'ERROR_LEXICO'
+    t.value = t.value
+    t.lineno = t.lineno
+    return t
 
 lexer = lex.lex()
 
