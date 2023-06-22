@@ -62,6 +62,8 @@ tokens=(
     'VideoData',
     'A_ItemizedList',
     'C_ItemizedList',
+    'A_ListItem',
+    'C_ListItem',
     'A_InformalTable',
     'C_InformalTable',
     'A_Tgroup',
@@ -319,6 +321,14 @@ def t_A_InformalTable(t):
 
 def t_C_InformalTable(t):
     r'</informaltable>'
+    return t
+
+def t_A_ListItem(t):
+    r'<listitem>'
+    return t
+
+def t_C_ListItem(t):
+    r'</listitem>'
     return t
 
 def t_A_Tgroup(t):
