@@ -34,7 +34,7 @@ def p_items(p):
         | A_Abstract paragraph C_Abstract
         | A_Abstract paragraph C_Abstract items'''
 
-#corregi porque decia 'section', mientras que arriba en article decia sections
+
 
 def p_sections(p):
     '''section: A_Section contenidosection C_Section
@@ -47,8 +47,6 @@ def p_contenidosection(p):
         | metadata items
         | metadata section
         | metadata'''
-
-#Agregue esta porque tienen distintos contenidos, simplesect no puede incluir una section dentro
 
 def p_contenidosimpsection(p):
     '''contenidosimpsection: metadata items
@@ -93,12 +91,6 @@ def p_paragraph(p):
 def p_mediaobject(p):
     '''mediaobject: info multimedia
         | multimedia'''
-
-def p_table(p):
-    '''table: A_MediaObject mediaobject C_MediaObject
-        | A_MediaObject mediaobject C_MediaObject table
-        | A_Tgroup tgroup C_Tgroup
-        | A_Tgroup tgroup C_Tgroup table'''
 
 def p_personalinfo(p):
     '''personalinfo: Contenido
@@ -183,16 +175,67 @@ def p_personalinfo(p):
         | A_Comment inlinetags C_Comment
         | A_Comment inlinetags C_Comment personalinfo'''
 
-def multimedia(p):
+def p_multimedia(p):
     '''multimedia: A_ImageObject imageobject C_ImageObject
         | A_ImageObject imageobject C_ImageObject multimedia
         | A_VideoObject videoobject C_VideoObject
         | A_VideoObject videoobject C_VideoObject multimedia'''
 
-def videoobject(p):
+def p_videoobject(p):
     '''videoobject: VideoData
         | Info VideoData'''
 
-def imageobject(p):
+def p_imageobject(p):
     '''imageobject: ImageData
         | Info ImageData'''
+
+def p_itemizedlist(p):
+    '''itemizedlist: A_listitem listitem C_listitem'''
+
+def p_listitem(p):
+    '''listitem: items'''
+
+def p_table(p):
+    '''table: A_MediaObject mediaobject C_MediaObject
+        | A_MediaObject mediaobject C_MediaObject table
+        | A_Tgroup tgroup C_Tgroup
+        | A_Tgroup tgroup C_Tgroup table'''
+
+def p_tgroup(p):
+    '''tgroup: A_Thead row C_Thead A_Tfoot row C_Tfoot A_Tbody row C_Tbody
+        | A_Thead row C_Thead A_Tbody row C_Tbody
+        | A_Tfoot row C_Tfoot A_Tbody row C_Tbody
+        | A_Tbody row C_Tbody'''
+
+def p_row(p):
+    '''row: A_Row entries C_Row
+    | A_Row entries C_Row row'''
+
+def p_entries(p):
+    '''entries: A_Entry entry C_Entry
+        | A_Entry entry C_Entry entries
+        | A_EntryTbl entrytbl C_EntryTbl
+        | A_EntryTbl entrytbl C_EntryTbl entries'''
+
+def p_entry(p):
+    '''entry: Contenido entry
+        | A_ItemizedList items C_ItemizedList
+        | A_ItemizedList items C_ItemizedList entry 
+        | A_Important important C_Important
+        | A_Important important C_Important entry
+        | paragraph
+        | paragraph entry
+        | A_MediaObject mediaobject C_MediaObject
+        | A_MediaObject mediaobject C_MediaObject entry
+        | A_InformalTable table C_InformalTable
+        | A_InformalTable table C_InformalTable entry
+        | A_Comment inlinetags C_Comment
+        | A_Comment inlinetags C_Comment entry
+        | A_Abstract title paragraph C_Abstract
+        | A_Abstract title paragraph C_Abstract entry
+        | A_Abstract paragraph C_Abstract
+        | A_Abstract paragraph C_Abstract entry'''
+
+def p_entrytbl(p):
+    '''entrytbl: A_Thead row C_Thead A_Tbody row C_Tbody
+        | A_Tbody row C_Tbody'''
