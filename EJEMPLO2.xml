@@ -1,0 +1,9 @@
+<!DOCTYPE article>
+<article>
+	<section>
+		<para>Este es un ejemplo de documento XML con URLs en la etiqueta link:</para>
+		<link xlink:href="http://www.ejemplo1.com">Link 1</link>
+		<link xlink:href="https://www.ejemplo2.com">Link 2 </link>
+		<link xlink:href="ftp://www.ejemplo3.com">Link 3 </link>
+	</section>
+</article>
