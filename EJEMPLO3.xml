@@ -1,0 +1,9 @@
+<!DOCTYPE article>
+<mediaobject>
+	<imageobject>
+		<imagedata fileref="http://www.ejemplo.com/imagen.jpg" />
+	</imageobject>
+	<videoobject>
+		<videodata fileref="http://www.ejemplo.com/video.mp4" />
+	</videoobject>
+</mediaobject>
