@@ -435,12 +435,6 @@ lexer = lex.lex()
 
 lexer.lineno = 1
 
-documento = input("Ingrese el documento: ")
-
-print("\n\n")
-
-lexer.input(documento)
-
 while True:
     token = lexer.token()
     if not token:
