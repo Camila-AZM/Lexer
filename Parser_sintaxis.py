@@ -2,13 +2,15 @@ import ply.yacc as yacc
 import xml.etree.ElementTree as ET
 from Lexer_sintaxis import tokens
 
+error_flag = False
+
 def p_docbook(p):
-    '''docbook : TipoDocumento nuevalinea article'''
+    '''docbook : TipoDocumento article'''
 
 def p_article(p):
-    '''article : A_Article metadata items sections C_Article
+    '''article : A_Article  metadata items sections C_Article
               | A_Article items sections C_Article
-              | A_Article items C_Article'''
+              | A_Article tabulacion items C_Article'''
 
 def p_metadata(p):
     '''metadata : A_Info info C_Info A_Title title C_Title
@@ -38,15 +40,15 @@ def p_items(p):
 
 
 def p_sections(p):
-    '''section : A_Section contenidosection C_Section
-        | A_Section contenidosection C_Section section
+    '''sections : A_Section contenidosection C_Section
+        | A_Section contenidosection C_Section sections
         | A_SimpleSection contenidosimpsection C_SimpleSection
-        | A_SimpleSection contenidosimpsection C_SimpleSection section'''
+        | A_SimpleSection contenidosimpsection C_SimpleSection sections'''
 
 def p_contenidosection(p):
-    '''contenidosection : metadata items section
+    '''contenidosection : metadata items sections
         | metadata items
-        | metadata section
+        | metadata sections
         | metadata'''
 
 def p_contenidosimpsection(p):
@@ -72,12 +74,12 @@ def p_info(p):
 def p_title(p):
     '''title : Contenido
         | Contenido title
-        | A_Emphasis emphasis C_Emphasis
-        | A_Emphasis emphasis C_Emphasis title
-        | A_Link link C_Link
-        | A_Link link C_Link title
-        | A_Email email C_Email
-        | A_Email email C_Email title'''
+        | A_Emphasis inlinetags C_Emphasis
+        | A_Emphasis inlinetags C_Emphasis title
+        | A_Link inlinetags C_Link
+        | A_Link inlinetags C_Link title
+        | A_Email personalinfo C_Email
+        | A_Email personalinfo C_Email title'''
 
 def p_important(p):
     '''important : A_Title title C_Title items
@@ -130,7 +132,7 @@ def p_inlinetags(p):
         | A_Author author C_Author inlinetags'''
 
 def p_abstract(p):
-    '''abstract : A_Title title C_title paragraph
+    '''abstract : A_Title title C_Title paragraph
         | paragraph'''
     
 def p_address(p):
@@ -177,14 +179,14 @@ def p_multimedia(p):
 
 def p_videoobject(p):
     '''videoobject : VideoData
-        | Info VideoData'''
+        | info VideoData'''
 
 def p_imageobject(p):
     '''imageobject : ImageData
-        | Info ImageData'''
+        | info ImageData'''
 
 def p_itemizedlist(p):
-    '''itemizedlist : A_listitem listitem C_listitem'''
+    '''itemizedlist : A_ListItem listitem C_ListItem'''
 
 def p_listitem(p):
     '''listitem : items'''
@@ -213,8 +215,8 @@ def p_entries(p):
 
 def p_entry(p):
     '''entry : Contenido entry
-        | A_ItemizedList items C_ItemizedList
-        | A_ItemizedList items C_ItemizedList entry 
+        | A_ItemizedList itemizedlist C_ItemizedList
+        | A_ItemizedList itemizedlist C_ItemizedList entry 
         | A_Important important C_Important
         | A_Important important C_Important entry
         | paragraph
@@ -235,6 +237,7 @@ def p_entrytbl(p):
         | A_Tbody row C_Tbody'''
     
 def p_error(p):
+    error_flag = True
     print("Error en la linea", p.lineno, "Valor:", p.value)
 
 # Lee el contenido del archivo XML
@@ -244,3 +247,6 @@ with open("EJEMPLO1.xml", "r") as archivo:
 # Crea el parser y llama a la función parse con el contenido XML
 parser = yacc.yacc()
 parser.parse(documento)
+
+if not error_flag:
+    print("El analisis sintactico se realizo correctamente")
