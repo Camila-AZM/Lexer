@@ -1,10 +1,9 @@
-
 <!DOCTYPE article>
 <article>
-	<section>
-		<title>Introducción</title>
-		<para>Este es un ejemplo sin errores léxicos.</para>
-	</section>
+	<para>
+		<emphasis>Introducción</emphasis>
+		<comment>Este es un ejemplo sin errores léxicos.</comment>
+	</para>
 	<section>
 		<title>Conclusiones</title>
 		<para>En resumen, el análisis léxico funciona correctamente.</para>
