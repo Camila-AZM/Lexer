@@ -392,7 +392,7 @@ def t_URL(t):
     return t
 
 def t_nuevalinea(t):
-    r'\\n'
+    '\\n'
     t.lexer.lineno += len(t.value)
     pass
 
@@ -435,10 +435,3 @@ lexer = lex.lex()
 
 lexer.lineno = 1
 
-while True:
-    token = lexer.token()
-    if not token:
-        break
-    print(token.type, token.value, "\n")
-
-input()
