@@ -2,10 +2,10 @@
 <article>
 	<para>
 		<emphasis>Introducción</emphasis>
-		<comment>Este es un ejemplo sin errores léxicos.</comment>
+		<comment>Este es un ejemplo sin errores sintácticos.</comment>
 	</para>
 	<section>
 		<title>Conclusiones</title>
-		<para>En resumen, el análisis léxico funciona correctamente.</para>
+		<para>En resumen, el análisis sintáctico funciona correctamente.</para>
 	</section>
 </article>
