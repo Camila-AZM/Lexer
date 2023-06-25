@@ -2,7 +2,6 @@ import ply.yacc as yacc
 import xml.etree.ElementTree as ET
 from Lexer_sintaxis import tokens
 
-error_flag = False
 
 def p_docbook(p):
     '''docbook : TipoDocumento article'''
@@ -237,6 +236,7 @@ def p_entrytbl(p):
         | A_Tbody row C_Tbody'''
     
 def p_error(p):
+    global error_flag
     error_flag = True
     print("Error en la linea", p.lineno, "Valor:", p.value)
 
@@ -244,9 +244,86 @@ def p_error(p):
 with open("EJEMPLO1.xml", "r") as archivo:
     documento = archivo.read()
 
+error_flag = False
+
 # Crea el parser y llama a la función parse con el contenido XML
 parser = yacc.yacc()
 parser.parse(documento)
 
-if not error_flag:
+if error_flag:
+    print("Hubieron errores sintacticos")
+else:
     print("El analisis sintactico se realizo correctamente")
+
+    tree = ET.parse("EJEMPLO1.xml")
+    root = tree.getroot()
+
+    # Crear el elemento raíz del documento HTML
+    html = ET.Element("html")
+
+    # Crear el elemento head
+    head = ET.SubElement(html, "head")
+
+    # Crear el elemento title y establecer el título del documento
+    title = ET.SubElement(head, "title")
+    title.text = "Título del documento"
+
+    # Crear el elemento body
+    body = ET.SubElement(html, "body")
+
+    # Función auxiliar para generar el elemento <p> con formato específico
+    def create_paragraph(text):
+        paragraph = ET.Element("p")
+        paragraph.text = text
+        paragraph.set("style", "background-color: green; color: white; font-size: 8pt;")
+        return paragraph
+
+    # Función auxiliar para generar el elemento <h2>
+    def create_heading2(text):
+        heading2 = ET.Element("h2")
+        heading2.text = text
+        return heading2
+
+    # Recorrer las etiquetas y generar el contenido HTML correspondiente
+    for element in root.iter():
+        if element.tag == "TipoDocumento":
+            # Crear el título del documento
+            heading1 = ET.SubElement(body, "h1")
+            heading1.text = element.text
+        elif element.tag == "article" or element.tag == "section":
+            # Crear los párrafos con fondo verde para las etiquetas dentro de info(article, section)
+            paragraph = create_paragraph(element.text)
+            body.append(paragraph)
+        elif element.tag == "important":
+            # Crear el contenido de texto dentro de una etiqueta <important> con color de fondo rojo y texto en blanco
+            paragraph = create_paragraph(element.text)
+            paragraph.set("style", "background-color: red; color: white;")
+            body.append(paragraph)
+        elif element.tag == "para" or element.tag == "simpara":
+            # Traducir las etiquetas <para> y <simpara> como párrafos <p>
+            paragraph = ET.Element("p")
+            paragraph.text = element.text
+            body.append(paragraph)
+        elif element.tag == "Link":
+            # Traducir la etiqueta <Link> como un enlace <a> con el atributo xlink:href como href
+            link = ET.Element("a")
+            link.text = element.text
+            link.set("href", element.attrib.get("xlink:href"))
+            body.append(link)
+        elif element.tag == "ItemizedList":
+            # Traducir las etiquetas <ItemizedList> como una lista <ul>
+            ul = ET.Element("ul")
+            body.append(ul)
+            for child in element:
+                if child.tag == "listitem":
+                    # Traducir las etiquetas <listitem> como elementos de lista <li>
+                    li = ET.Element("li")
+                    li.text = child.text
+                    ul.append(li)
+
+    # Crear el árbol del documento HTML
+    html_tree = ET.ElementTree(html)
+
+    # Guardar el documento HTML en un archivo
+    html_tree.write("EJEMPLO1.html", encoding="utf-8", method="html")
+input()
