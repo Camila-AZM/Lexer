@@ -1,4 +1,6 @@
 import ply.yacc as yacc
+import os
+import time
 import xml.etree.ElementTree as ET
 from Lexer_sintaxis import tokens
 
@@ -240,15 +242,65 @@ def p_error(p):
     error_flag = True
     print("Error en la linea", p.lineno, "Valor:", p.value)
 
-# Lee el contenido del archivo XML
-with open("EJEMPLO1.xml", "r") as archivo:
-    documento = archivo.read()
+# Una ventana de presentacion jeje
+pantalla = [
+    "=================================================================================================",
+    "",
+    "                                  Trabajo Practico Integrador",
+    "                           Diseño e Implementacion de Lexer y Parser",
+    "",
+    "=================================================================================================",
+    "",
+    "                                           GRUPO 18",
+    "                                         Integrantes:",
+    "                                 - Rodriguez Scornik, Matias",
+    "                                 - Zeniquel Martinelli, Camila Aylen",
+    "",
+    "=================================================================================================",
+    "",
+    "                               Sintaxis y Semantica de los Lenguajes",
+    "                                         Comision ISI A",
+    "                                            Año 2023"
+]
 
-error_flag = False
+for linea in pantalla:
+        print(linea)
 
-# Crea el parser y llama a la función parse con el contenido XML
-parser = yacc.yacc()
-parser.parse(documento)
+time.sleep(6)
+
+os.system('cls')
+
+def menu():
+    cosas_de_menu = [
+        "=================================================================================================",
+        "",
+        "                        ANALIZADOR LEXICO/SINTACTICO DE DOCBOOK",
+        "Seleccione una de las opciones:",
+        "1_ Utilizar el Ejemplo 1",
+        "2_ Utilizar el Ejemplo 2",
+        "3_ Utilizar el Ejemplo 3",
+        "4_ Utilizar un archivo propio",
+        "5_ Escribir el documento por pantalla",
+        "6_ Salir",
+        ""
+    ]
+    for linea in cosas_de_menu:
+        print(linea)
+
+menu()
+opcion = int(input("Opcion: "))
+
+if opcion == 1:
+    # Lee el contenido del archivo XML
+    with open("EJEMPLO1.xml", "r") as archivo:
+        documento = archivo.read()
+
+    error_flag = False
+
+    # Crea el parser y llama a la función parse con el contenido XML
+    parser = yacc.yacc()
+    parser.parse(documento)
+
 
 if error_flag:
     print("Hubieron errores sintacticos")
@@ -257,7 +309,8 @@ else:
 
     tree = ET.parse("EJEMPLO1.xml")
     root = tree.getroot()
-
+    # Crea el tipo de documento que se va a usar
+    tipodoc = ET.Element("!DOCTYPE html")
     # Crear el elemento raíz del documento HTML
     html = ET.Element("html")
 
@@ -274,8 +327,13 @@ else:
     # Función auxiliar para generar el elemento <p> con formato específico
     def create_paragraph(text):
         paragraph = ET.Element("p")
-        paragraph.text = text
         paragraph.set("style", "background-color: green; color: white; font-size: 8pt;")
+        text = ""
+        for child in element:
+            text += ET.tostring(child, encoding="unicode")
+
+        paragraph.text = text.strip()  # Eliminar espacios en blanco al inicio y final del texto
+
         return paragraph
 
     # Función auxiliar para generar el elemento <h2>
@@ -290,7 +348,7 @@ else:
             # Crear el título del documento
             heading1 = ET.SubElement(body, "h1")
             heading1.text = element.text
-        elif element.tag == "article" or element.tag == "section":
+        elif element.tag == "info":
             # Crear los párrafos con fondo verde para las etiquetas dentro de info(article, section)
             paragraph = create_paragraph(element.text)
             body.append(paragraph)
@@ -304,6 +362,11 @@ else:
             paragraph = ET.Element("p")
             paragraph.text = element.text
             body.append(paragraph)
+        elif element.tag == "emphasis":
+            # Traducir las etiquetas <emphasis> como texto enfatizado
+            emphasis = ET.Element("em")
+            emphasis.text = element.text
+            body.append(emphasis)
         elif element.tag == "Link":
             # Traducir la etiqueta <Link> como un enlace <a> con el atributo xlink:href como href
             link = ET.Element("a")
