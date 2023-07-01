@@ -1,8 +1,11 @@
 <!DOCTYPE article>
 <article>
+	<info><title>Holis</title></info>
+	<title>TPI Sintaxis y Semántica de los lenguajes</title>
 	<para>
 		<emphasis>Introducción</emphasis>
 		<comment>Este es un ejemplo sin errores sintácticos.</comment>
+		<important><para>Esto es re importante</para></important>
 	</para>
 	<section>
 		<title>Conclusiones</title>
