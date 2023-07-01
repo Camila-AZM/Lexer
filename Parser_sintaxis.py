@@ -1,15 +1,550 @@
+import ply.lex as lex
 import ply.yacc as yacc
 import os
 import time
-import xml.etree.ElementTree as ET
-from Lexer_sintaxis import tokens
 
+sec = False
+
+tokens=(
+    'TipoDocumento',
+    'A_Article',
+    'C_Article',
+    'A_Section',
+    'C_Section',
+    'A_Title',
+    'C_Title',
+    'A_SimpleSection',
+    'C_SimpleSection',
+    'A_Info',
+    'C_Info',
+    'A_Abstract',
+    'C_Abstract',
+    'A_Address',
+    'C_Address',
+    'A_Author',
+    'C_Author',
+    'A_Copyright',
+    'C_Copyright',
+    'A_Para',
+    'C_Para',
+    'A_Simpara',
+    'C_Simpara',
+    'A_Emphasis',
+    'C_Emphasis',
+    'A_Comment',
+    'C_Comment',
+    'A_Link',
+    'C_Link',
+    'XLink',
+    'A_Important',
+    'C_Important',
+    'A_FirstName',
+    'C_FirstName',
+    'A_SurName',
+    'C_SurName',
+    'A_Street',
+    'C_Street',
+    'A_City',
+    'C_City',
+    'A_State',
+    'C_State',
+    'A_Phone',
+    'C_Phone',
+    'A_Email',
+    'C_Email',
+    'A_Date',
+    'C_Date',
+    'A_Year',
+    'C_Year',
+    'A_Holder',
+    'C_Holder',
+    'A_MediaObject',
+    'C_MediaObject',
+    'A_VideoObject',
+    'C_VideoObject',
+    'A_ImageObject',
+    'C_ImageObject',
+    'ImageData',
+    'VideoData',
+    'Fileref',
+    'A_ItemizedList',
+    'C_ItemizedList',
+    'A_ListItem',
+    'C_ListItem',
+    'A_InformalTable',
+    'C_InformalTable',
+    'A_Tgroup',
+    'C_Tgroup',
+    'A_Thead',
+    'C_Thead',
+    'A_Tfoot',
+    'C_Tfoot',
+    'A_Tbody',
+    'C_Tbody',
+    'A_Row',
+    'C_Row',
+    'A_EntryTbl',
+    'C_EntryTbl',
+    'A_Entry',
+    'C_Entry',
+    'URL',
+    'nuevalinea',
+    'espacios',
+    'tabulacion',
+    'GT',
+    'SLASH_GT',
+    'Contenido',
+)
+
+
+archivo = open("EJEMPLO1.html", "w")
+
+def t_TipoDocumento(t):
+    r'<!DOCTYPE\sarticle\s*>'
+    archivo.write("<!DOCTYPE html>")
+    return t
+
+def t_A_Article(t):    
+    r'<article>'
+    archivo.write("<html lang='es'> <head> </head> <body>")
+    return t
+
+def t_C_Article(t): 
+    r'</article>'
+    return t
+
+def t_A_Section(t): 
+    r'<section>'
+    global sec
+    sec = True
+    return t
+
+def t_C_Section(t): 
+    r'</section>'
+    global sec
+    sec = False
+    return t
+
+def t_A_Title(t):
+    r'<title>'
+    global sec
+    if sec:
+        archivo.write("<H2>")
+    else:
+        archivo.write("<H1>")
+    return t
+
+def t_C_Title(t):
+    r'</title>'
+    global sec
+    if sec:
+        archivo.write("</H2>")
+    else:
+        archivo.write("</H1>")
+    return t
+
+def t_A_SimpleSection(t): 
+    r'<simplesect>'
+    global sec
+    sec = True
+    return t
+
+def t_C_SimpleSection(t):
+    r'</simplesect>'
+    global sec
+    sec = False
+    return t
+
+def t_A_Info(t):
+    r'<info>'
+    archivo.write('<p style="background-color: green; color: white; font-size: 8pt;">')
+    return t
+
+def t_C_Info(t):
+    r'</info>'
+    archivo.write('</p>')
+    return t
+
+def t_A_Abstract(t):   
+    r'<abstract>'
+    return t
+
+def t_C_Abstract(t): 
+    r'</abstract>'
+    return t
+
+def t_A_Address(t): 
+    r'<address>'
+    return t
+
+def t_C_Address(t): 
+    r'</address>'
+    return t
+
+def t_A_Author(t):
+    r'<author>'
+    return t
+
+def t_C_Author(t):
+    r'</author>'
+    return t
+
+def t_A_Copyright(t):
+    r'<copyright>'
+    return t
+
+def t_C_Copyright(t):
+    r'</copyright>'
+    return t
+
+def t_A_Para(t):
+    r'<para>'
+    archivo.write("<p>")
+    return t
+
+def t_C_Para(t):
+    r'</para>'
+    archivo.write("</p>")
+    return t
+
+def t_A_SimPara(t):
+    r'<simpara>'
+    archivo.write("<p>")
+    return t
+
+def t_C_SimPara(t):
+    r'</simpara>'
+    archivo.write("</p>")
+    return t
+
+def t_A_Emphasis(t):
+    r'<emphasis>'
+    return t
+
+def t_C_Emphasis(t):
+    r'</emphasis>'
+    return t
+
+def t_A_Comment(t):
+    r'<comment>'
+    return t
+
+def t_C_Comment(t):
+    r'</comment>'
+    return t
+
+def t_A_Important(t):
+    r'<important>'
+    archivo.write('<div style="background-color: red; color: white;">')
+    return t
+
+def t_C_Important(t):
+    r'</important>'
+    archivo.write('</div>')
+    return t
+
+def t_A_FirstName(t):
+    r'<firstname>'
+    return t
+
+def t_C_FirstName(t):
+    r'</firstname>'
+    return t
+
+def t_A_SurName(t):
+    r'<surname>'
+    return t
+
+def t_C_SurName(t):
+    r'</surname>'
+    return t
+
+def t_A_Street(t):
+    r'<street>'
+    return t
+
+def t_C_Street(t):
+    r'</street>'
+    return t
+
+def t_A_City(t):
+    r'<city>'
+    return t
+
+def t_C_City(t):
+    r'</city>'
+    return t
+
+def t_A_State(t):
+    r'<state>'
+    return t
+
+def t_C_State(t):
+    r'</state>'
+    return t
+
+def t_A_Phone(t):
+    r'<phone>'
+    return t
+
+def t_C_Phone(t):
+    r'</phone>'
+    return t
+
+def t_A_Email(t):
+    r'<email>'
+    return t
+
+def t_C_Email(t):
+    r'</email>'
+    return t
+
+def t_A_Date(t):
+    r'<date>'
+    return t
+
+def t_C_Date(t):
+    r'</date>'
+    return t
+
+def t_A_Year(t):
+    r'<year>'
+    return t
+
+def t_C_Year(t):
+    r'</year>'
+    return t
+
+def t_A_Holder(t):
+    r'<holder>'
+    return t
+
+def t_C_Holder(t):
+    r'</holder>'
+    return t
+
+def t_A_MediaObject(t):
+    r'<mediaobject>'
+    return t
+
+def t_C_MediaObject(t):
+    r'</mediaobject>'
+    return t
+
+def t_A_VideoObject(t):
+    r'<videoobject>'
+    return t
+
+def t_C_VideoObject(t):
+    r'</videoobject>'
+    return t
+
+def t_A_ImageObject(t):
+    r'<imageobject>'
+    return t
+
+def t_C_ImageObject(t):
+    r'</imageobject>'
+    return t
+
+def t_A_ItemizedList(t):
+    r'<itemizedlist>'
+    archivo.write("<ul>")
+    return t
+
+def t_C_ItemizedList(t):
+    r'</itemizedlist>'
+    archivo.write("</ul>")
+    return t
+
+def t_A_ListItem(t):
+    r'<listitem>'
+    archivo.write("<li>")
+    return t
+
+def t_C_ListItem(t):
+    r'</listitem>'
+    archivo.write("</li>")
+    return t
+
+def t_A_InformalTable(t):
+    r'<informaltable>'
+    archivo.write("<table>")
+    return t
+
+def t_C_InformalTable(t):
+    r'</informaltable>'
+    archivo.write("</table>")
+    return t
+
+def t_A_Tgroup(t):
+    r'<tgroup>'
+    return t
+
+def t_C_Tgroup(t):
+    r'</tgroup>'
+    return t
+
+def t_A_Thead(t): 
+    r'<thead>'
+    archivo.write("<thead>")
+    return t
+
+def t_C_Thead(t): 
+    r'</thead>'
+    archivo.write("</thead>")
+    return t
+
+def t_A_Tfoot(t): 
+    r'<tfoot>'
+    archivo.write("<tfoot>")
+    return t
+
+def t_C_Tfoot(t):
+    r'</tfoot>'
+    archivo.write("</tfoot>")
+    return t
+
+def t_A_Tbody(t): 
+    r'<tbody>'
+    archivo.write("<tbody>")
+    return t
+
+def t_C_Tbody(t): 
+    r'</tbody>'
+    archivo.write("</tbody>")
+    return t
+
+def t_A_Row(t): 
+    r'<row>'
+    archivo.write("<tr>")
+    return t
+
+def t_C_Row(t):
+    r'</row>'
+    global encabezado
+    encabezado += 1
+    archivo.write("</tr>")
+    return t
+
+def t_A_EntryTbl(t):
+    r'<entrytbl>'
+    archivo.write("<table>")
+    return t
+
+def t_C_EntryTbl(t):
+    r'</entrytbl>'
+    archivo.write("</table>")
+    return t
+
+def t_A_Entry(t): 
+    r'<entry>'
+    if encabezado == 1:
+        archivo.write("<th>")
+    else:
+        archivo.write("<td>")
+    return t
+
+def t_C_Entry(t): 
+    r'</entry>'
+    if encabezado == 1:
+        archivo.write("</th>")
+    else:
+        archivo.write("</td>")
+    return t
+
+def t_A_Link(t):
+    r'<link '
+    global link
+    link = True
+    archivo.write("<html:a ")
+    return t
+
+def t_XLink(t):
+    r'xlink:href\s*=\s*'
+    archivo.write("href =")
+    return t
+
+def t_C_Link(t):
+    r'</link>'
+    global link
+    link = False
+    archivo.write("</html:a>")
+    return t
+
+def t_ImageData(t): 
+    r'<imagedata\s+'
+    global link
+    link = True
+    archivo.write("<html:a ")
+    return t
+
+def t_VideoData(t): 
+    r'<videodata\s+'
+    global link
+    link = True
+    archivo.write("<html:a ")
+    return t
+
+def t_Fileref(t):
+    r'fileref\s*=\s*'
+    archivo.write("fileref =")
+    return t
+
+def t_URL(t):
+    r'(http|https|ftp|ftps)://[a-zA-Z][\w.-]+(:\d*)?(/[a-zA-Z0-9-.-]+)*(\#\w+)?'
+    if link:
+        archivo.write(t.value + "></html:a>")
+    return t
+
+# Token para el cierre de etiqueta '>'
+def t_GT(t):
+    r'>'
+    return t
+
+# Token para el cierre automático '/>'
+def t_SLASH_GT(t):
+    r'/>'
+    return t
+
+def t_nuevalinea(t):
+    '\\n'
+    t.lexer.lineno += len(t.value)
+    archivo.write("\n")
+    pass
+
+def t_espacios(t):
+    '\s+'
+    pass
+
+def t_tabulacion(t):
+    r'\\t'
+    archivo.write("\t")
+    pass
+
+def t_Contenido(t): 
+    r'[^<>\n]+'
+    archivo.write(t.value)
+    return t
+
+def t_error(t):
+    print("Carácter no válido: '%s'" % t.value[0])
+    t.type = 'ERROR_LEXICO'
+    t.value = t.value
+    t.lineno = t.lineno
+    return t
+
+lexer = lex.lex()
+
+lexer.lineno = 1
 
 def p_docbook(p):
     '''docbook : TipoDocumento article'''
 
 def p_article(p):
-    '''article : A_Article  metadata items sections C_Article
+    '''article : A_Article A_Info info C_Info A_Title title C_Title items sections C_Article
+              | A_Article A_Title title C_Title items sections C_Article
+              | A_Article A_Info info C_Info items sections C_Article  
               | A_Article items sections C_Article
               | A_Article tabulacion items C_Article'''
 
@@ -45,13 +580,14 @@ def p_sections(p):
         | A_Section contenidosection C_Section sections
         | A_SimpleSection contenidosimpsection C_SimpleSection
         | A_SimpleSection contenidosimpsection C_SimpleSection sections'''
+    
 
 def p_contenidosection(p):
     '''contenidosection : metadata items sections
         | metadata items
         | metadata sections
         | metadata'''
-
+    
 def p_contenidosimpsection(p):
     '''contenidosimpsection : metadata items
         | metadata'''
@@ -77,8 +613,8 @@ def p_title(p):
         | Contenido title
         | A_Emphasis inlinetags C_Emphasis
         | A_Emphasis inlinetags C_Emphasis title
-        | A_Link inlinetags C_Link
-        | A_Link inlinetags C_Link title
+        | A_Link XLink URL GT inlinetags C_Link
+        | A_Link XLink URL GT inlinetags C_Link title
         | A_Email personalinfo C_Email
         | A_Email personalinfo C_Email title'''
 
@@ -101,8 +637,8 @@ def p_para(p):
         | Contenido para
         | A_Emphasis inlinetags C_Emphasis
         | A_Emphasis inlinetags C_Emphasis para
-        | A_Link inlinetags C_Link
-        | A_Link inlinetags C_Link para
+        | A_Link XLink URL GT inlinetags C_Link
+        | A_Link XLink URL GT inlinetags C_Link para
         | A_Author author C_Author
         | A_Author author C_Author para
         | A_Comment inlinetags C_Comment
@@ -123,8 +659,8 @@ def p_inlinetags(p):
         | Contenido inlinetags
         | A_Emphasis inlinetags C_Emphasis
         | A_Emphasis inlinetags C_Emphasis inlinetags
-        | A_Link inlinetags C_Link
-        | A_Link inlinetags C_Link inlinetags
+        | A_Link XLink URL GT inlinetags C_Link
+        | A_Link XLink URL GT inlinetags C_Link inlinetags
         | A_Comment inlinetags C_Comment
         | A_Comment inlinetags C_Comment inlinetags
         | A_Email personalinfo C_Email
@@ -165,8 +701,8 @@ def p_copyright(p):
 def p_personalinfo(p):
     '''personalinfo : Contenido
         | Contenido personalinfo
-        | A_Link inlinetags C_Link
-        | A_Link inlinetags C_Link personalinfo
+        | A_Link XLink URL GT inlinetags C_Link
+        | A_Link XLink URL GT inlinetags C_Link personalinfo
         | A_Emphasis inlinetags C_Emphasis
         | A_Emphasis inlinetags C_Emphasis personalinfo
         | A_Comment inlinetags C_Comment
@@ -179,12 +715,12 @@ def p_multimedia(p):
         | A_VideoObject videoobject C_VideoObject multimedia'''
 
 def p_videoobject(p):
-    '''videoobject : VideoData
-        | info VideoData'''
+    '''videoobject : VideoData Fileref SLASH_GT
+        | info VideoData Fileref SLASH_GT'''
 
 def p_imageobject(p):
-    '''imageobject : ImageData
-        | info ImageData'''
+    '''imageobject : ImageData Fileref SLASH_GT
+        | info ImageData Fileref SLASH_GT'''
 
 def p_itemizedlist(p):
     '''itemizedlist : A_ListItem listitem C_ListItem'''
@@ -240,7 +776,7 @@ def p_entrytbl(p):
 def p_error(p):
     global error_flag
     error_flag = True
-    print("Error en la linea", p.lineno, "Valor:", p.value)
+    print("Error en la linea", p.lineno, "\nValor: "+str(p.value)+"\n")
 
 # Una ventana de presentacion jeje
 pantalla = [
@@ -266,7 +802,7 @@ pantalla = [
 for linea in pantalla:
         print(linea)
 
-time.sleep(6)
+time.sleep(2)
 
 os.system('cls')
 
@@ -292,8 +828,8 @@ opcion = int(input("Opcion: "))
 
 if opcion == 1:
     # Lee el contenido del archivo XML
-    with open("EJEMPLO1.xml", "r") as archivo:
-        documento = archivo.read()
+    with open("EJEMPLO1.xml", "r") as arch_xml:
+        documento = arch_xml.read()
 
     error_flag = False
 
@@ -306,87 +842,6 @@ if error_flag:
     print("Hubieron errores sintacticos")
 else:
     print("El analisis sintactico se realizo correctamente")
+    archivo.write("</body>")
 
-    tree = ET.parse("EJEMPLO1.xml")
-    root = tree.getroot()
-    # Crea el tipo de documento que se va a usar
-    tipodoc = ET.Element("!DOCTYPE html")
-    # Crear el elemento raíz del documento HTML
-    html = ET.Element("html")
-
-    # Crear el elemento head
-    head = ET.SubElement(html, "head")
-
-    # Crear el elemento title y establecer el título del documento
-    title = ET.SubElement(head, "title")
-    title.text = "Título del documento"
-
-    # Crear el elemento body
-    body = ET.SubElement(html, "body")
-
-    # Función auxiliar para generar el elemento <p> con formato específico
-    def create_paragraph(text):
-        paragraph = ET.Element("p")
-        paragraph.set("style", "background-color: green; color: white; font-size: 8pt;")
-        text = ""
-        for child in element:
-            text += ET.tostring(child, encoding="unicode")
-
-        paragraph.text = text.strip()  # Eliminar espacios en blanco al inicio y final del texto
-
-        return paragraph
-
-    # Función auxiliar para generar el elemento <h2>
-    def create_heading2(text):
-        heading2 = ET.Element("h2")
-        heading2.text = text
-        return heading2
-
-    # Recorrer las etiquetas y generar el contenido HTML correspondiente
-    for element in root.iter():
-        if element.tag == "TipoDocumento":
-            # Crear el título del documento
-            heading1 = ET.SubElement(body, "h1")
-            heading1.text = element.text
-        elif element.tag == "info":
-            # Crear los párrafos con fondo verde para las etiquetas dentro de info(article, section)
-            paragraph = create_paragraph(element.text)
-            body.append(paragraph)
-        elif element.tag == "important":
-            # Crear el contenido de texto dentro de una etiqueta <important> con color de fondo rojo y texto en blanco
-            paragraph = create_paragraph(element.text)
-            paragraph.set("style", "background-color: red; color: white;")
-            body.append(paragraph)
-        elif element.tag == "para" or element.tag == "simpara":
-            # Traducir las etiquetas <para> y <simpara> como párrafos <p>
-            paragraph = ET.Element("p")
-            paragraph.text = element.text
-            body.append(paragraph)
-        elif element.tag == "emphasis":
-            # Traducir las etiquetas <emphasis> como texto enfatizado
-            emphasis = ET.Element("em")
-            emphasis.text = element.text
-            body.append(emphasis)
-        elif element.tag == "Link":
-            # Traducir la etiqueta <Link> como un enlace <a> con el atributo xlink:href como href
-            link = ET.Element("a")
-            link.text = element.text
-            link.set("href", element.attrib.get("xlink:href"))
-            body.append(link)
-        elif element.tag == "ItemizedList":
-            # Traducir las etiquetas <ItemizedList> como una lista <ul>
-            ul = ET.Element("ul")
-            body.append(ul)
-            for child in element:
-                if child.tag == "listitem":
-                    # Traducir las etiquetas <listitem> como elementos de lista <li>
-                    li = ET.Element("li")
-                    li.text = child.text
-                    ul.append(li)
-
-    # Crear el árbol del documento HTML
-    html_tree = ET.ElementTree(html)
-
-    # Guardar el documento HTML en un archivo
-    html_tree.write("EJEMPLO1.html", encoding="utf-8", method="html")
-input()
+    
