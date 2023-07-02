@@ -1,10 +1,18 @@
 <!DOCTYPE article>
 <article>
-	<info><title>Holis</title><author><firstname>que que prueba hola</firstname></author></info>
+	<info>
+		<title>Holis</title>
+		<abstract><simpara>Este trabajo fue hecho con python</simpara></abstract>
+		<mediaobject>
+			<imageobject>
+				<imagedata fileref = "https://acortar.link/ByqgT9"/>
+			</imageobject>
+		</mediaobject>
+	</info>
 	<title>TPI Sintaxis y Semántica de los lenguajes</title>
 	<para>
 		<emphasis>Introducción</emphasis>
-		<comment>Este es un ejemplo sin errores sintácticos.<link xlink:href = https://youtu.be/dQw4w9WgXcQ>Aca hay un link</link></comment>
+		<comment>Este es un ejemplo sin errores sintácticos.<link xlink:href = "https://youtu.be/dQw4w9WgXcQ">Aca hay un link</link></comment>
 		<important><para>Esto es re importante</para></important>
 	</para>
 	<informaltable>
