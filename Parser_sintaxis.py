@@ -4,6 +4,8 @@ import os
 import time
 
 sec = False
+encabezado = 0
+head = False
 
 tokens=(
     'TipoDocumento',
@@ -157,12 +159,12 @@ def t_C_SimpleSection(t):
 
 def t_A_Info(t):
     r'<info>'
-    archivo.write('<p style="background-color: green; color: white; font-size: 8pt;">')
+    archivo.write('<div style="background-color: green; color: white; font-size: 8pt;">')
     return t
 
 def t_C_Info(t):
     r'</info>'
-    archivo.write('</p>')
+    archivo.write('</div>')
     return t
 
 def t_A_Abstract(t):   
@@ -387,11 +389,15 @@ def t_C_Tgroup(t):
 
 def t_A_Thead(t): 
     r'<thead>'
+    global head
+    head = True
     archivo.write("<thead>")
     return t
 
 def t_C_Thead(t): 
     r'</thead>'
+    global head
+    head = False
     archivo.write("</thead>")
     return t
 
@@ -422,8 +428,6 @@ def t_A_Row(t):
 
 def t_C_Row(t):
     r'</row>'
-    global encabezado
-    encabezado += 1
     archivo.write("</tr>")
     return t
 
@@ -439,7 +443,8 @@ def t_C_EntryTbl(t):
 
 def t_A_Entry(t): 
     r'<entry>'
-    if encabezado == 1:
+    global head
+    if head:
         archivo.write("<th>")
     else:
         archivo.write("<td>")
@@ -447,7 +452,8 @@ def t_A_Entry(t):
 
 def t_C_Entry(t): 
     r'</entry>'
-    if encabezado == 1:
+    global head
+    if head:
         archivo.write("</th>")
     else:
         archivo.write("</td>")
@@ -456,8 +462,8 @@ def t_C_Entry(t):
 def t_A_Link(t):
     r'<link '
     global link
-    link = True
-    archivo.write("<html:a ")
+    link = False
+    archivo.write("<a ")
     return t
 
 def t_XLink(t):
@@ -469,21 +475,21 @@ def t_C_Link(t):
     r'</link>'
     global link
     link = False
-    archivo.write("</html:a>")
+    archivo.write("</a>")
     return t
 
 def t_ImageData(t): 
     r'<imagedata\s+'
     global link
     link = True
-    archivo.write("<html:a ")
+    archivo.write("a ")
     return t
 
 def t_VideoData(t): 
     r'<videodata\s+'
     global link
     link = True
-    archivo.write("<html:a ")
+    archivo.write("<a ")
     return t
 
 def t_Fileref(t):
@@ -494,7 +500,9 @@ def t_Fileref(t):
 def t_URL(t):
     r'(http|https|ftp|ftps)://[a-zA-Z][\w.-]+(:\d*)?(/[a-zA-Z0-9-.-]+)*(\#\w+)?'
     if link:
-        archivo.write(t.value + "></html:a>")
+        archivo.write(t.value + "></a>")
+    else:
+        archivo.write(t.value + ">")
     return t
 
 # Token para el cierre de etiqueta '>'
@@ -519,7 +527,7 @@ def t_espacios(t):
 
 def t_tabulacion(t):
     r'\\t'
-    archivo.write("\t")
+    archivo.write("\t\t")
     pass
 
 def t_Contenido(t): 
@@ -735,9 +743,9 @@ def p_table(p):
         | A_Tgroup tgroup C_Tgroup table'''
 
 def p_tgroup(p):
-    '''tgroup : A_Thead row C_Thead A_Tfoot row C_Tfoot A_Tbody row C_Tbody
+    '''tgroup : A_Thead row C_Thead A_Tbody row C_Tbody A_Tfoot row C_Tfoot
         | A_Thead row C_Thead A_Tbody row C_Tbody
-        | A_Tfoot row C_Tfoot A_Tbody row C_Tbody
+        | A_Tbody row C_Tbody A_Tfoot row C_Tfoot
         | A_Tbody row C_Tbody'''
 
 def p_row(p):
@@ -751,7 +759,8 @@ def p_entries(p):
         | A_EntryTbl entrytbl C_EntryTbl entries'''
 
 def p_entry(p):
-    '''entry : Contenido entry
+    '''entry : Contenido
+        | Contenido entry
         | A_ItemizedList itemizedlist C_ItemizedList
         | A_ItemizedList itemizedlist C_ItemizedList entry 
         | A_Important important C_Important
