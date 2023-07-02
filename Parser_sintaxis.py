@@ -2,13 +2,16 @@ import ply.lex as lex
 import ply.yacc as yacc
 import os
 import time
+import tkinter as tk
 
 sec = False
-encabezado = 0
 head = False
 
 tokens=(
     'TipoDocumento',
+    'XML',
+    'VERSION',
+    'ENCODING',
     'A_Article',
     'C_Article',
     'A_Section',
@@ -100,6 +103,20 @@ tokens=(
 
 
 archivo = open("EJEMPLO1.html", "w")
+
+def t_XML(t):
+  r"<\?xml"
+  return t
+
+
+def t_VERSION(t):
+  r'version="\d+\.\d+"'
+  return t
+
+
+def t_ENCODING(t):
+  r'encoding="(UTF|utf)-\d+"\?>'
+  return t
 
 def t_TipoDocumento(t):
     r'<!DOCTYPE\sarticle\s*>'
@@ -209,12 +226,12 @@ def t_C_Para(t):
     archivo.write("</p>")
     return t
 
-def t_A_SimPara(t):
+def t_A_Simpara(t):
     r'<simpara>'
     archivo.write("<p>")
     return t
 
-def t_C_SimPara(t):
+def t_C_Simpara(t):
     r'</simpara>'
     archivo.write("</p>")
     return t
@@ -462,12 +479,14 @@ def t_C_Entry(t):
 def t_A_Link(t):
     r'<link '
     global link
-    link = False
+    link = True
     archivo.write("<a ")
     return t
 
 def t_XLink(t):
     r'xlink:href\s*=\s*'
+    global link
+    link = True
     archivo.write("href =")
     return t
 
@@ -479,30 +498,29 @@ def t_C_Link(t):
     return t
 
 def t_ImageData(t): 
-    r'<imagedata\s+'
-    global link
-    link = True
-    archivo.write("a ")
+    r'<imagedata '
+    archivo.write("<img ")
     return t
 
 def t_VideoData(t): 
-    r'<videodata\s+'
-    global link
-    link = True
+    r'<videodata '
     archivo.write("<a ")
     return t
 
 def t_Fileref(t):
     r'fileref\s*=\s*'
-    archivo.write("fileref =")
+    global link
+    link = False
+    archivo.write("src =")
     return t
 
 def t_URL(t):
-    r'(http|https|ftp|ftps)://[a-zA-Z][\w.-]+(:\d*)?(/[a-zA-Z0-9-.-]+)*(\#\w+)?'
+    r'"(http|https|ftp|ftps)://[a-zA-Z][\w.-]+(:\d*)?(/[a-zA-Z0-9-.-]+)*(\#\w+)?"'
     if link:
-        archivo.write(t.value + "></a>")
+        archivo.write(t.value)
+        archivo.write(">")
     else:
-        archivo.write(t.value + ">")
+        archivo.write(t.value + "/>")
     return t
 
 # Token para el cierre de etiqueta '>'
@@ -536,25 +554,29 @@ def t_Contenido(t):
     return t
 
 def t_error(t):
-    print("Carácter no válido: '%s'" % t.value[0])
+    r'.'
+    print("Carácter no válido: '%s' en la línea %s" % (t.value[0], t.lineno))
+    global error_lexico
+    error_lexico = True
     t.type = 'ERROR_LEXICO'
     t.value = t.value
     t.lineno = t.lineno
-    return t
+    pass
 
 lexer = lex.lex()
 
 lexer.lineno = 1
 
 def p_docbook(p):
-    '''docbook : TipoDocumento article'''
+    '''docbook : XML VERSION ENCODING TipoDocumento article
+            | TipoDocumento article'''
 
 def p_article(p):
     '''article : A_Article A_Info info C_Info A_Title title C_Title items sections C_Article
               | A_Article A_Title title C_Title items sections C_Article
               | A_Article A_Info info C_Info items sections C_Article  
               | A_Article items sections C_Article
-              | A_Article tabulacion items C_Article'''
+              | A_Article items C_Article'''
 
 def p_metadata(p):
     '''metadata : A_Info info C_Info A_Title title C_Title
@@ -651,8 +673,8 @@ def p_para(p):
         | A_Author author C_Author para
         | A_Comment inlinetags C_Comment
         | A_Comment inlinetags C_Comment para
-        | A_ItemizedList items C_ItemizedList
-        | A_ItemizedList items C_ItemizedList para
+        | A_ItemizedList itemizedlist C_ItemizedList
+        | A_ItemizedList itemizedlist C_ItemizedList para
         | A_Important  items C_Important
         | A_Important items C_Important para
         | A_Address address C_Address
@@ -723,15 +745,16 @@ def p_multimedia(p):
         | A_VideoObject videoobject C_VideoObject multimedia'''
 
 def p_videoobject(p):
-    '''videoobject : VideoData Fileref SLASH_GT
-        | info VideoData Fileref SLASH_GT'''
+    '''videoobject : VideoData Fileref URL SLASH_GT
+        | info VideoData Fileref URL SLASH_GT'''
 
 def p_imageobject(p):
-    '''imageobject : ImageData Fileref SLASH_GT
-        | info ImageData Fileref SLASH_GT'''
+    '''imageobject : ImageData Fileref URL SLASH_GT
+        | info ImageData Fileref URL SLASH_GT'''
 
 def p_itemizedlist(p):
-    '''itemizedlist : A_ListItem listitem C_ListItem'''
+    '''itemizedlist : A_ListItem listitem C_ListItem
+        | A_ListItem listitem C_ListItem itemizedlist'''
 
 def p_listitem(p):
     '''listitem : items'''
@@ -786,6 +809,7 @@ def p_error(p):
     global error_flag
     error_flag = True
     print("Error en la linea", p.lineno, "\nValor: "+str(p.value)+"\n")
+
 
 # Una ventana de presentacion jeje
 pantalla = [
