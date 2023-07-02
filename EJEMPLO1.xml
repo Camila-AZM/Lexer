@@ -1,12 +1,42 @@
 <!DOCTYPE article>
 <article>
-	<info><title>Holis</title></info>
+	<info><title>Holis</title><author><firstname>que que prueba hola</firstname></author></info>
 	<title>TPI Sintaxis y Semántica de los lenguajes</title>
 	<para>
 		<emphasis>Introducción</emphasis>
-		<comment>Este es un ejemplo sin errores sintácticos.</comment>
+		<comment>Este es un ejemplo sin errores sintácticos.<link xlink:href = https://youtu.be/dQw4w9WgXcQ>Aca hay un link</link></comment>
 		<important><para>Esto es re importante</para></important>
 	</para>
+	<informaltable>
+		<tgroup>
+			<thead>
+				<row>
+					<entry>Encabezado de la tabla</entry>
+					<entry>Columna 1</entry>
+					<entry>Columna 2</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>Título 1</entry>
+					<entry>Dato 1</entry>
+					<entry>Dato 2</entry>
+				</row>
+				<row>
+					<entry>Título 2</entry>
+					<entry>Dato 3</entry>
+					<entry>Dato 4</entry>
+				</row>
+			</tbody>
+			<tfoot>
+				<row>
+					<entry>Pie de tabla</entry>
+					<entry>Footer 1</entry>
+					<entry>Footer 2</entry>
+				</row>
+			</tfoot>
+		</tgroup>
+	</informaltable>
 	<section>
 		<title>Conclusiones</title>
 		<para>En resumen, el análisis sintáctico funciona correctamente.</para>
