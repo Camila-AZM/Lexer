@@ -539,8 +539,7 @@ def t_SLASH_GT(t):
 
 def t_newline(t):
     r'\n+'
-    lexer.lineno += 1
-    t.lexer.lineno += len(t.value)
+    t.lexer.lineno += t.value.count("\n")
     archivo.write("\n")
 
 def t_espacios(t):
@@ -893,8 +892,8 @@ class XMLCompiler(tk.Tk):
     def compile_text(self):
         global archivo
         global arch_ingresado
+        global nuevonombre
         documento = self.text_edit.get(1.0, tk.END)
-        print(nuevonombre)
         if arch_ingresado:
             archivo = open(nuevonombre, "w")
         else:
@@ -909,24 +908,8 @@ class XMLCompiler(tk.Tk):
             else:
                 # Mostrar mensaje de éxito
                 messagebox.showinfo("Análisis exitoso", "El código XML se analizó correctamente.")
+                archivo.write("</body>")
 
-
-        #     # Lee el contenido del archivo XML
-#     with open("EJEMPLO1.xml", "r") as arch_xml:
-#         documento = arch_xml.read()
-
-#     error_flag = False
-
-#     # Crea el parser y llama a la función parse con el contenido XML
-#     parser = yacc.yacc()
-#     parser.parse(documento)
-
-
-# if error_flag:
-#     print("Hubieron errores sintacticos")
-# else:
-#     print("El analisis sintactico se realizo correctamente")
-#     archivo.write("</body>")
 
 if __name__ == "__main__":
     window = XMLCompiler()
