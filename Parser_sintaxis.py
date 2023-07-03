@@ -534,11 +534,12 @@ def t_SLASH_GT(t):
     r'/>'
     return t
 
-def t_newline(t):
+def t_nuevalinea(t):
     r'\n+'
-    t.lexer.lineno += t.value.count("\n")
+    t.lexer.lineno += len(t.value)
     archivo.write("\n")
     pass
+
 
 def t_espacios(t):
     '\s+'
@@ -550,8 +551,6 @@ def t_Contenido(t):
     return t
 
 def t_error(t):
-    global error_lexico
-    error_lexico = True
     t.value = t.value
     t.lineno = t.lineno
     t.lexer.skip(1)
@@ -809,6 +808,7 @@ def p_error(p):
     error_message = ("Error en la línea: " + str(p.lineno) + "\nValor: " + p.value)
 
 error_flag = False
+current_line_number = 1
 
 parser = yacc.yacc()
 
@@ -834,6 +834,12 @@ class XMLCompiler(tk.Tk):
         self.text_edit = tk.Text(layout, height=40, width=100)
         self.text_edit.pack(side="left", padx=10, pady=10)
         self.text_edit.insert(tk.END, "Escriba su código aquí...")
+
+        def handle_key_press(event):
+            if event.keysym == 'd':  # Control + D
+                self.destroy()
+
+        self.text_edit.bind('<KeyPress>', handle_key_press)
 
         # Barra de desplazamiento para el cuadro de texto
         scroll = tk.Scrollbar(layout, command=self.text_edit.yview)
@@ -913,8 +919,11 @@ class XMLCompiler(tk.Tk):
                 messagebox.showerror("Error en el análisis", error_message)
             else:
                 # Mostrar mensaje de éxito
-                messagebox.showinfo("Análisis exitoso", "El código XML se analizó correctamente.")
                 archivo.write("</body>")
+                archivo.close()
+                messagebox.showinfo("Análisis exitoso", "El código XML se analizó correctamente.")
+
+    
 
 if __name__ == "__main__":
     window = XMLCompiler()
