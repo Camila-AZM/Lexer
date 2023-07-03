@@ -848,6 +848,12 @@ class XMLCompiler(tk.Tk):
         self.load_button = tk.Button(layout, text="Cargar Archivo", command=self.load_file)
         self.load_button.pack(pady=10)
 
+        #Botones para los ejemplos
+        self.ex1_button = tk.Button(layout, text="Ejemplo 1", command=self.load_example1)
+        self.ex1_button.pack(pady=10)
+        self.ex2_button = tk.Button(layout, text="Ejemplo 2", command=self.load_example2)
+        self.ex2_button.pack(pady=10)
+
         # Botón para compilar el texto
         self.compile_button = tk.Button(layout, text="Compilar", command=self.compile_text)
         self.compile_button.pack(pady=10)
@@ -875,18 +881,17 @@ class XMLCompiler(tk.Tk):
         self.configure(bg=gradient)
 
     def load_example1(self):
+        global nuevonombre
+        nuevonombre="EJEMPLO1.html"
         self.text_edit.delete(1.0, END)
-        with open("EJEMPLO1.xml", "r") as file:
+        with codecs.open("EJEMPLO1.xml", "r", encoding="utf-8") as file:
             self.text_edit.insert(END, file.read())
 
     def load_example2(self):
+        global nuevonombre
+        nuevonombre="EJEMPLO2.html"
         self.text_edit.delete(1.0, END)
-        with open("EJEMPLO2.xml", "r") as file:
-            self.text_edit.insert(END, file.read())
-
-    def load_example3(self):
-        self.text_edit.delete(1.0, END)
-        with open("EJEMPLO3.xml", "r") as file:
+        with codecs.open("EJEMPLO2.xml", "r", encoding="utf-8") as file:
             self.text_edit.insert(END, file.read())
             
     def compile_text(self):
@@ -909,7 +914,6 @@ class XMLCompiler(tk.Tk):
                 # Mostrar mensaje de éxito
                 messagebox.showinfo("Análisis exitoso", "El código XML se analizó correctamente.")
                 archivo.write("</body>")
-
 
 if __name__ == "__main__":
     window = XMLCompiler()
