@@ -1,52 +1,48 @@
 <!DOCTYPE article>
 <article>
-	<info>
-		<title>Holis</title>
-		<abstract><simpara>Este trabajo fue hecho con python</simpara></abstract>
-		<mediaobject>
-			<imageobject>
-				<imagedata fileref = "https://acortar.link/ByqgT9"/>
-			</imageobject>
-		</mediaobject>
+	<info><title>UTN - Facultad Regional Resistencia</title><author><firstname>Camila, </firstname><surname>Zeniquel Martinelli</surname>
+	</author><author><firstname> Matias, </firstname><surname>Rodriguez Scornik</surname></author>
 	</info>
 	<title>TPI Sintaxis y Semántica de los lenguajes</title>
 	<para>
-		<emphasis>Introducción</emphasis>
-		<comment>Este es un ejemplo sin errores sintácticos.<link xlink:href = "https://youtu.be/dQw4w9WgXcQ">Aca hay un link</link></comment>
-		<important><para>Esto es re importante</para></important>
+		<emphasis>Conoce mas sobre la UTN</emphasis>
+
+		<comment>En el siguiente enlace, se muestra un poco como es la Facultad Regional Resistencia y que podemos encontrar en ella.<link xlink:href = "https://youtu.be/NP66YC0e1OM" >Link UTN</link></comment>
+		<important><para>Dentro de la UTN- Free se pueden encontrar las siguientes carreras: Ing. Quimica, Ing en Sistemas de Inf, Ingenieria Electromecanica y Lic en Admin Rural</para></important>
 	</para>
+	<comment>En la siguiente tabla, se mostraran los alumnos de la UTN, que realizan algun deporte, distinguiendo segun el deporte o sexo:</comment>
 	<informaltable>
 		<tgroup>
 			<thead>
 				<row>
-					<entry>Encabezado de la tabla</entry>
-					<entry>Columna 1</entry>
-					<entry>Columna 2</entry>
+					<entry>Deporte</entry>
+					<entry>Femenino</entry>
+					<entry>Masculino</entry>
 				</row>
 			</thead>
 			<tbody>
 				<row>
-					<entry>Título 1</entry>
-					<entry>Dato 1</entry>
-					<entry>Dato 2</entry>
+					<entry>Basket</entry>
+					<entry>12</entry>
+					<entry>20</entry>
 				</row>
 				<row>
-					<entry>Título 2</entry>
-					<entry>Dato 3</entry>
-					<entry>Dato 4</entry>
+					<entry>Voley</entry>
+					<entry>15</entry>
+					<entry>14</entry>
 				</row>
 			</tbody>
 			<tfoot>
 				<row>
-					<entry>Pie de tabla</entry>
-					<entry>Footer 1</entry>
-					<entry>Footer 2</entry>
+					<entry>Total</entry>
+					<entry>27</entry>
+					<entry>34</entry>
 				</row>
 			</tfoot>
 		</tgroup>
 	</informaltable>
 	<section>
-		<title>Conclusiones</title>
-		<para>En resumen, el análisis sintáctico funciona correctamente.</para>
+		<title>Conclusion</title>
+		<para>En el siguiente ejemplo, se mostraron tanto una tabla, como un link, perteneciente a un video que nos muestra un poco como es la UTN, y en resumen se demuestra que el análisis sintáctico funciona correctamente.</para>
 	</section>
 </article>
