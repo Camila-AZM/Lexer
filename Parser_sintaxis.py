@@ -1,7 +1,6 @@
 import ply.lex as lex
 import ply.yacc as yacc
 import os
-import time
 import tkinter as tk
 from tkinter import *
 from tkinter import filedialog, messagebox, ttk
@@ -105,8 +104,6 @@ tokens=(
     'SLASH_GT',
     'Contenido',
 )
-
-archivo = ""
 
 def t_XML(t):
   r"<\?xml"
@@ -541,14 +538,10 @@ def t_newline(t):
     r'\n+'
     t.lexer.lineno += t.value.count("\n")
     archivo.write("\n")
+    pass
 
 def t_espacios(t):
     '\s+'
-    pass
-
-def t_tabulacion(t):
-    r'\t+'
-    archivo.write("\t\t")
     pass
 
 def t_Contenido(t): 
@@ -819,6 +812,9 @@ error_flag = False
 
 parser = yacc.yacc()
 
+arch_ingresado = False
+ej_ingresado = False
+
 class XMLCompiler(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -882,6 +878,8 @@ class XMLCompiler(tk.Tk):
 
     def load_example1(self):
         global nuevonombre
+        global ej_ingresado
+        ej_ingresado = True
         nuevonombre="EJEMPLO1.html"
         self.text_edit.delete(1.0, END)
         with codecs.open("EJEMPLO1.xml", "r", encoding="utf-8") as file:
@@ -889,6 +887,8 @@ class XMLCompiler(tk.Tk):
 
     def load_example2(self):
         global nuevonombre
+        global ej_ingresado
+        ej_ingresado = True
         nuevonombre="EJEMPLO2.html"
         self.text_edit.delete(1.0, END)
         with codecs.open("EJEMPLO2.xml", "r", encoding="utf-8") as file:
@@ -897,9 +897,10 @@ class XMLCompiler(tk.Tk):
     def compile_text(self):
         global archivo
         global arch_ingresado
+        global ej_ingresado
         global nuevonombre
         documento = self.text_edit.get(1.0, tk.END)
-        if arch_ingresado:
+        if arch_ingresado or ej_ingresado:
             archivo = open(nuevonombre, "w")
         else:
             archivo = open("TPI_Sintaxis", "w")
