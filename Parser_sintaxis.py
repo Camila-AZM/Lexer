@@ -3,6 +3,11 @@ import ply.yacc as yacc
 import os
 import time
 import tkinter as tk
+from tkinter import *
+from tkinter import filedialog, messagebox, ttk
+from tkinter.constants import END
+import codecs
+
 
 sec = False
 head = False
@@ -101,8 +106,7 @@ tokens=(
     'Contenido',
 )
 
-
-archivo = open("EJEMPLO1.html", "w")
+archivo = ""
 
 def t_XML(t):
   r"<\?xml"
@@ -533,18 +537,18 @@ def t_SLASH_GT(t):
     r'/>'
     return t
 
-def t_nuevalinea(t):
-    '\\n'
+def t_newline(t):
+    r'\n+'
+    lexer.lineno += 1
     t.lexer.lineno += len(t.value)
     archivo.write("\n")
-    pass
 
 def t_espacios(t):
     '\s+'
     pass
 
 def t_tabulacion(t):
-    r'\\t'
+    r'\t+'
     archivo.write("\t\t")
     pass
 
@@ -554,18 +558,18 @@ def t_Contenido(t):
     return t
 
 def t_error(t):
-    r'.'
-    print("Carácter no válido: '%s' en la línea %s" % (t.value[0], t.lineno))
     global error_lexico
     error_lexico = True
-    t.type = 'ERROR_LEXICO'
     t.value = t.value
     t.lineno = t.lineno
+    t.lexer.skip(1)
     pass
+
 
 lexer = lex.lex()
 
 lexer.lineno = 1
+linea = 0
 
 def p_docbook(p):
     '''docbook : XML VERSION ENCODING TipoDocumento article
@@ -806,75 +810,124 @@ def p_entrytbl(p):
         | A_Tbody row C_Tbody'''
     
 def p_error(p):
+    global error_message
     global error_flag
+    global linea
     error_flag = True
-    print("Error en la linea", p.lineno, "\nValor: "+str(p.value)+"\n")
+    error_message = ("Error en la línea: " + str(p.lineno) + "\nValor: " + p.value)
+
+error_flag = False
+
+parser = yacc.yacc()
+
+class XMLCompiler(tk.Tk):
+    def __init__(self):
+        super().__init__()
+
+        self.title("Compilador de XML")
+        self.geometry("1280x800")
+
+        # Widget principal
+        central_widget = tk.Frame(self, bg="#FFC0CB")
+        central_widget.pack(fill="both", expand=True)
+
+        # Diseño horizontal para los cuadros de texto
+        layout = tk.Frame(central_widget)
+        layout.pack(padx=10, pady=10)
+
+        # Cuadro de texto principal para introducir el código XML
+        self.text_edit = tk.Text(layout, height=40, width=100)
+        self.text_edit.pack(side="left", padx=10, pady=10)
+        self.text_edit.insert(tk.END, "Escriba su código aquí...")
+
+        # Barra de desplazamiento para el cuadro de texto
+        scroll = tk.Scrollbar(layout, command=self.text_edit.yview)
+        scroll.pack(side="right", fill="y")
+        self.text_edit.config(yscrollcommand=scroll.set)
+
+        # Botón para cargar un archivo de texto externo
+        self.load_button = tk.Button(layout, text="Cargar Archivo", command=self.load_file)
+        self.load_button.pack(pady=10)
+
+        # Botón para compilar el texto
+        self.compile_button = tk.Button(layout, text="Compilar", command=self.compile_text)
+        self.compile_button.pack(pady=10)
+
+        # Botón para salir de la aplicación
+        self.exit_button = tk.Button(layout, text="Salir", command=self.destroy)
+        self.exit_button.pack(pady=10)
+
+    def load_file(self):
+        global nuevonombre
+        global arch_ingresado
+        file_path = filedialog.askopenfilename(title="Cargar Archivo",
+                                               filetypes=(("Archivos de Texto", "*.txt *.xml"),))
+        
+        nombre_archivo, extension = os.path.splitext(file_path)
+        nuevonombre = os.path.basename(nombre_archivo) + '.html'
+        if file_path:
+            arch_ingresado = True
+            with codecs.open(file_path, "r", encoding="utf-8") as file:
+                self.text_edit.delete(1.0, tk.END)
+                self.text_edit.insert(tk.END, file.read())
+
+    def set_background_gradient(self, color1, color2, color3):
+        gradient = f"{{ {color1} }} linear gradient(0, 0, 0, 1) {{ {color2} }} linear gradient(0, 0, 0, 1) {{ {color3} }}"
+        self.configure(bg=gradient)
+
+    def load_example1(self):
+        self.text_edit.delete(1.0, END)
+        with open("EJEMPLO1.xml", "r") as file:
+            self.text_edit.insert(END, file.read())
+
+    def load_example2(self):
+        self.text_edit.delete(1.0, END)
+        with open("EJEMPLO2.xml", "r") as file:
+            self.text_edit.insert(END, file.read())
+
+    def load_example3(self):
+        self.text_edit.delete(1.0, END)
+        with open("EJEMPLO3.xml", "r") as file:
+            self.text_edit.insert(END, file.read())
+            
+    def compile_text(self):
+        global archivo
+        global arch_ingresado
+        documento = self.text_edit.get(1.0, tk.END)
+        print(nuevonombre)
+        if arch_ingresado:
+            archivo = open(nuevonombre, "w")
+        else:
+            archivo = open("TPI_Sintaxis", "w")
+        if not documento.strip():
+        # Mostrar mensaje de advertencia
+            messagebox.showwarning("Cuadro de texto vacío", "Debe cargar un archivo o escribir código en el cuadro de texto.")
+        else:
+            parser.parse(documento)
+            if error_flag:
+                messagebox.showerror("Error en el análisis", error_message)
+            else:
+                # Mostrar mensaje de éxito
+                messagebox.showinfo("Análisis exitoso", "El código XML se analizó correctamente.")
 
 
-# Una ventana de presentacion jeje
-pantalla = [
-    "=================================================================================================",
-    "",
-    "                                  Trabajo Practico Integrador",
-    "                           Diseño e Implementacion de Lexer y Parser",
-    "",
-    "=================================================================================================",
-    "",
-    "                                           GRUPO 18",
-    "                                         Integrantes:",
-    "                                 - Rodriguez Scornik, Matias",
-    "                                 - Zeniquel Martinelli, Camila Aylen",
-    "",
-    "=================================================================================================",
-    "",
-    "                               Sintaxis y Semantica de los Lenguajes",
-    "                                         Comision ISI A",
-    "                                            Año 2023"
-]
+        #     # Lee el contenido del archivo XML
+#     with open("EJEMPLO1.xml", "r") as arch_xml:
+#         documento = arch_xml.read()
 
-for linea in pantalla:
-        print(linea)
+#     error_flag = False
 
-time.sleep(2)
-
-os.system('cls')
-
-def menu():
-    cosas_de_menu = [
-        "=================================================================================================",
-        "",
-        "                        ANALIZADOR LEXICO/SINTACTICO DE DOCBOOK",
-        "Seleccione una de las opciones:",
-        "1_ Utilizar el Ejemplo 1",
-        "2_ Utilizar el Ejemplo 2",
-        "3_ Utilizar el Ejemplo 3",
-        "4_ Utilizar un archivo propio",
-        "5_ Escribir el documento por pantalla",
-        "6_ Salir",
-        ""
-    ]
-    for linea in cosas_de_menu:
-        print(linea)
-
-menu()
-opcion = int(input("Opcion: "))
-
-if opcion == 1:
-    # Lee el contenido del archivo XML
-    with open("EJEMPLO1.xml", "r") as arch_xml:
-        documento = arch_xml.read()
-
-    error_flag = False
-
-    # Crea el parser y llama a la función parse con el contenido XML
-    parser = yacc.yacc()
-    parser.parse(documento)
+#     # Crea el parser y llama a la función parse con el contenido XML
+#     parser = yacc.yacc()
+#     parser.parse(documento)
 
 
-if error_flag:
-    print("Hubieron errores sintacticos")
-else:
-    print("El analisis sintactico se realizo correctamente")
-    archivo.write("</body>")
+# if error_flag:
+#     print("Hubieron errores sintacticos")
+# else:
+#     print("El analisis sintactico se realizo correctamente")
+#     archivo.write("</body>")
 
-    
+if __name__ == "__main__":
+    window = XMLCompiler()
+    window.mainloop()
