@@ -7,7 +7,6 @@ from tkinter import filedialog, messagebox, ttk
 from tkinter.constants import END
 import codecs
 
-
 sec = False
 head = False
 
@@ -516,7 +515,7 @@ def t_Fileref(t):
     return t
 
 def t_URL(t):
-    r'"(http|https|ftp|ftps)://[a-zA-Z][\w.-]+(:\d*)?(/[a-zA-Z0-9-.-]+)*(\#\w+)?"'
+    r'"(http|https|ftp|ftps)://[a-zA-Z][\w.-//]+(:\d*)?(/[a-zA-Z0-9-.-]+)*(\#\w+)?"'
     if link:
         archivo.write(t.value)
         archivo.write(">")
@@ -536,8 +535,8 @@ def t_SLASH_GT(t):
 
 def t_nuevalinea(t):
     r'\n+'
-    t.lexer.lineno += len(t.value)
-    archivo.write("\n")
+    lexer.lineno += 1
+    archivo.write(t.value)
     pass
 
 
@@ -558,9 +557,8 @@ def t_error(t):
 
 
 lexer = lex.lex()
-
 lexer.lineno = 1
-linea = 0
+
 
 def p_docbook(p):
     '''docbook : XML VERSION ENCODING TipoDocumento article
@@ -579,8 +577,8 @@ def p_metadata(p):
         | A_Info info C_Info'''
 
 def p_items(p):
-    '''items : A_ItemizedList items C_ItemizedList
-        | A_ItemizedList items C_ItemizedList items 
+    '''items : A_ItemizedList itemizedlist C_ItemizedList
+        | A_ItemizedList itemizedlist C_ItemizedList items 
         | A_Important important C_Important
         | A_Important important C_Important items
         | paragraph
@@ -608,10 +606,18 @@ def p_sections(p):
     
 
 def p_contenidosection(p):
-    '''contenidosection : metadata items sections
-        | metadata items
-        | metadata sections
-        | metadata'''
+    '''contenidosection : A_Info info C_Info A_Title title C_Title items sections
+        | A_Title title C_Title items sections
+        | A_Info info C_Info items sections
+        | A_Info info C_Info A_Title title C_Title items
+        | A_Title title C_Title items
+        | A_Info info C_Info items
+        | A_Info info C_Info A_Title title C_Title sections
+        | A_Title title C_Title sections
+        | A_Info info C_Info sections
+        | A_Info info C_Info A_Title title C_Title
+        | A_Title title C_Title
+        | A_Info info C_Info'''
     
 def p_contenidosimpsection(p):
     '''contenidosimpsection : metadata items
@@ -752,7 +758,8 @@ def p_itemizedlist(p):
         | A_ListItem listitem C_ListItem itemizedlist'''
 
 def p_listitem(p):
-    '''listitem : items'''
+    '''listitem : items
+        | items listitem'''
 
 def p_table(p):
     '''table : A_MediaObject mediaobject C_MediaObject
@@ -803,14 +810,14 @@ def p_entrytbl(p):
 def p_error(p):
     global error_message
     global error_flag
-    global linea
+    global error_message
     error_flag = True
-    error_message = ("Error en la línea: " + str(p.lineno) + "\nValor: " + p.value)
+    error_message = ("Error en la linea: ", p.lineno, "Valor: ", p.value)
 
 error_flag = False
-current_line_number = 1
 
 parser = yacc.yacc()
+parser.lineno = 1
 
 arch_ingresado = False
 ej_ingresado = False
