@@ -1,9 +1,20 @@
 <!DOCTYPE article>
 <article>
+	<info>
+		<abstract>
+			<title>Ejemplo</title>
+			<para>Aceptor DocBook/XML y Conversor a HTML</para>
+		</abstract>
+	</info>
+	<comment>En la siguiente imagen, se mostrara una playa con rocas</comment>
+	<mediaobject>
+			<imageobject>
+				<imagedata fileref = "https://acortar.link/ByqgT9"/>
+			</imageobject>
+	</mediaobject>
+	
 	<section>
-		<para>Este es un ejemplo de documento XML con URLs en la etiqueta link:</para>
-		<link xlink:href="http://www.ejemplo1.com">Link 1</link>
-		<link xlink:href="https://www.ejemplo2.com">Link 2 </link>
-		<link xlink:href="ftp://www.ejemplo3.com">Link 3 </link>
+		<title>Vacaciones</title>
+		<para>En este docuemento, se incorpora una imagen </para>
 	</section>
 </article>
