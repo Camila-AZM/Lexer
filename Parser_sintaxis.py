@@ -812,7 +812,7 @@ def p_error(p):
     global error_flag
     global error_message
     error_flag = True
-    error_message = ("Error en la linea: ", p.lineno, "Valor: ", p.value)
+    error_message = ("Valor del error: ", p.value)
 
 error_flag = False
 
